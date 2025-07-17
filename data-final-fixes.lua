@@ -16,7 +16,7 @@ function This_MOD.start()
     GPrefix.split_name_folder(This_MOD)
 
     --- Valores de la referencia
-    This_MOD.setSetting()
+    This_MOD.setting_mod()
 
     --- Fluidos a afectar
     This_MOD.getFluids()
@@ -28,7 +28,7 @@ function This_MOD.start()
 end
 
 --- Valores de la referencia
-function This_MOD.setSetting()
+function This_MOD.setting_mod()
     --- Otros valores
     This_MOD.Prefix   = "zzzYAIM0425-0500-"
     This_MOD.name     = "free-fluids"
