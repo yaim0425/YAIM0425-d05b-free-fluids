@@ -25,14 +25,21 @@ function This_MOD.start()
     This_MOD.create_recipes()
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    This_MOD.create_entity()
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 end
 
 --- Valores de la referencia
 function This_MOD.setting_mod()
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    --- Fluidos a duplicar
+    --- Valores a duplicar
     This_MOD.fluids = {}
+    This_MOD.entity = GPrefix.entities["assembling-machine-2"]
+    This_MOD.item = GPrefix.get_item_create_entity(This_MOD.entity)
+    This_MOD.recipes = GPrefix.recipes[This_MOD.item.name]
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
@@ -187,7 +194,7 @@ function This_MOD.create_entity()
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
     --- Duplicar la entidad
-    local Entity = util.copy(GPrefix.entities["assembling-machine-2"])
+    local Entity = util.copy(This_MOD.entity)
 
     --- Nombre de la entidad
     Entity.name = This_MOD.prefix .. Entity.name
@@ -196,9 +203,15 @@ function This_MOD.create_entity()
     Entity.fast_replaceable_group = nil
     Entity.next_upgrade = nil
 
-    --- Mejorar los valores
+    --- Cambiar el las propiedades
     -- Entity.crafting_speed = 0.002
-    Entity.energy_source = { type = 'void' }
+    Entity.energy_source = { type = "void" }
+    table.insert(Entity.icons, This_MOD.indicator)
+    Entity.minable.results = { {
+        type = "item",
+        name = This_MOD.prefix .. This_MOD.item.name,
+        amount = 1
+    } }
 
     --- Recetas validas
     Entity.crafting_categories = {}
