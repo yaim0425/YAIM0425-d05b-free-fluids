@@ -12,6 +12,9 @@ local This_MOD = {}
 function This_MOD.start()
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
+    --- Obtener información desde el nombre de MOD
+    GPrefix.split_name_folder(This_MOD)
+
     --- Valores de la referencia
     This_MOD.setSetting()
 
