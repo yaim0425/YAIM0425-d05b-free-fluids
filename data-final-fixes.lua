@@ -66,7 +66,7 @@ function This_MOD.setting_mod()
 
         hide_from_player_crafting = true,
         enabled = true,
-        category = "crafting-with-fluid",
+        category = This_MOD.prefix,
         subgroup = "",
         order = "",
 
@@ -84,6 +84,21 @@ end
 
 
 ---------------------------------------------------------------------------------------------------
+
+--- Crear las categorias
+function This_MOD.create_category()
+    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    --- Crear las categorias
+    for action, _ in pairs(This_MOD.actions) do
+        GPrefix.extend({
+            type = "recipe-category",
+            name = This_MOD.prefix .. action
+        })
+    end
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+end
 
 --- Fluidos a afectar
 function This_MOD.get_fluids()
@@ -125,7 +140,9 @@ function This_MOD.get_fluids()
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 end
 
---- Crear las recetas de los fluidos
+---------------------------------------------------------------------------------------------------
+
+--- Crear las recetas
 function This_MOD.create_recipes()
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
@@ -164,6 +181,10 @@ function This_MOD.create_recipes()
     end
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+end
+
+--- Crear las entidades
+function This_MOD.create_entity()
 end
 
 ---------------------------------------------------------------------------------------------------
