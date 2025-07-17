@@ -27,6 +27,7 @@ function This_MOD.start()
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
     This_MOD.create_entity()
+    This_MOD.create_item()
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 end
@@ -63,7 +64,7 @@ function This_MOD.setting_mod()
 
     --- Indicador de mod
     This_MOD.indicator = {
-        icon = GPrefix.fluids["water"].icons[1].icon,
+        icon = GPrefix.fluids["sulfuric-acid"].icons[1].icon,
         shift = { 14, -4 },
         scale = 0.15
     }
@@ -203,8 +204,7 @@ function This_MOD.create_entity()
     Entity.fast_replaceable_group = nil
     Entity.next_upgrade = nil
 
-    --- Cambiar el las propiedades
-    -- Entity.crafting_speed = 0.002
+    --- Cambiar las propiedades
     Entity.energy_source = { type = "void" }
     table.insert(Entity.icons, This_MOD.indicator)
     Entity.minable.results = { {
@@ -231,6 +231,26 @@ function This_MOD.create_entity()
 
     --- Crear la entiadad
     GPrefix.extend(Entity)
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+end
+
+--- Crear los objetos
+function This_MOD.create_item()
+    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    --- Duplicar la entidad
+    local Item = util.copy(This_MOD.item)
+
+    --- Nombre de la entidad
+    Item.name = This_MOD.prefix .. Item.name
+
+    --- Cambiar las propiedades
+    Item.place_result = This_MOD.prefix .. Item.place_result
+    table.insert(Item.icons, This_MOD.indicator)
+
+    --- Crear item
+    GPrefix.extend(Item)
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 end
