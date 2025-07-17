@@ -245,10 +245,8 @@ function This_MOD.create_entity()
             type = "recipe-category",
             name = This_MOD.prefix .. action
         })
-    end
 
-    --- Modificar las recetas
-    for action, _ in pairs(This_MOD.actions) do
+        --- Modificar las recetas
         for _, fluid in pairs(This_MOD.fluids) do
             local Recipe = data.raw.recipe[This_MOD.prefix .. fluid.name .. "-" .. action]
             Recipe.category = This_MOD.prefix .. action
