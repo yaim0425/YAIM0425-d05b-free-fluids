@@ -29,6 +29,8 @@ end
 
 --- Valores de la referencia
 function This_MOD.setting_mod()
+    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
     --- Otros valores
     This_MOD.Prefix   = "zzzYAIM0425-0500-"
     This_MOD.name     = "free-fluids"
@@ -49,6 +51,8 @@ function This_MOD.setting_mod()
         ["delete"] = "ingredients"
     }
 
+    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
     --- Receta base
     This_MOD.Recipe   = {
         type                      = "recipe",
@@ -66,6 +70,8 @@ function This_MOD.setting_mod()
         ingredients               = {},
         results                   = {}
     }
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 end
 
 ---------------------------------------------------------------------------------------------------
