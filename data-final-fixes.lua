@@ -37,8 +37,9 @@ end
 --- Valores de la referencia
 function This_MOD.setting_mod()
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    ---> Valores a duplicar
+    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    --- Valores a duplicar
     This_MOD.fluids = {}
     This_MOD.entity = GPrefix.entities["assembling-machine-2"]
     This_MOD.item = GPrefix.get_item_create_entity(This_MOD.entity)
@@ -46,11 +47,22 @@ function This_MOD.setting_mod()
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    --- Valores de configuración
+
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    ---> Valores de configuración
+    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
     This_MOD.all = GPrefix.Setting[This_MOD.id]["all"]
     This_MOD.amount = GPrefix.Setting[This_MOD.id]["amount"]
 
-    --- Indicador del MOD
+    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    ---> Indicador del MOD
+    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
     local BackColor = ""
 
     BackColor = data.raw["virtual-signal"]["signal-deny"].icons[1].icon
@@ -73,7 +85,12 @@ function This_MOD.setting_mod()
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    --- Receta base
+
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    ---> Receta base
+    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
     This_MOD.recipe_base = {
         type = "recipe",
         name = "",
@@ -261,7 +278,21 @@ end
 function This_MOD.create_recipe()
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
+    --- Duplicar la receta
     local Recipe = util.copy(This_MOD.recipe)
+
+    --- Cambiar los valores
+    Recipe.name = This_MOD.prefix .. Recipe.name
+    Recipe.ingredients = {}
+    Recipe.results = { {
+        type = "item",
+        name = This_MOD.prefix .. This_MOD.item.name,
+        amount = 1
+    } }
+
+    --- Crear la receta
+    GPrefix.extend(Recipe)
+
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 end
 
