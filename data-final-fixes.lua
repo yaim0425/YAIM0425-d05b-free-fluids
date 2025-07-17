@@ -40,7 +40,7 @@ function This_MOD.setting_mod()
     This_MOD.fluids = {}
     This_MOD.entity = GPrefix.entities["assembling-machine-2"]
     This_MOD.item = GPrefix.get_item_create_entity(This_MOD.entity)
-    This_MOD.recipes = GPrefix.recipes[This_MOD.item.name]
+    This_MOD.recipes = GPrefix.recipes[This_MOD.item.name][1]
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
