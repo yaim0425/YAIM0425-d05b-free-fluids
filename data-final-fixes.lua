@@ -65,8 +65,8 @@ function This_MOD.setting_mod()
     --- Indicador de mod
     This_MOD.indicator = {
         icon = GPrefix.fluids["sulfuric-acid"].icons[1].icon,
-        shift = { 14, -4 },
-        scale = 0.15
+        shift = { 0, -5 },
+        scale = 0.25
     }
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
