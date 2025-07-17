@@ -1,0 +1,12 @@
+{
+  "name": "zzzYAIM0425-0500-free-fluids",
+  "version": "0.0.1",
+  "title": "zzzYAIM0425 0500 Free fluids",
+  "author": "YAIM904",
+  "factorio_version": "2.0",
+  "description": "Create a recipe that supplies and another recipe that destroys fluids that can be found in nature. [[I accept suggestions]]",
+  "dependencies": [
+    "base",
+    "zzzYAIM0425-0000-lib"
+  ]
+}
