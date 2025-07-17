@@ -26,8 +26,10 @@ function This_MOD.start()
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
+    --- Crear entidad y relacionado
     This_MOD.create_entity()
     This_MOD.create_item()
+    This_MOD.create_recipe()
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 end
@@ -40,7 +42,7 @@ function This_MOD.setting_mod()
     This_MOD.fluids = {}
     This_MOD.entity = GPrefix.entities["assembling-machine-2"]
     This_MOD.item = GPrefix.get_item_create_entity(This_MOD.entity)
-    This_MOD.recipes = GPrefix.recipes[This_MOD.item.name][1]
+    This_MOD.recipe = GPrefix.recipes[This_MOD.item.name][1]
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
@@ -72,7 +74,7 @@ function This_MOD.setting_mod()
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
     --- Receta base
-    This_MOD.recipe = {
+    This_MOD.recipe_base = {
         type = "recipe",
         name = "",
         localised_name = {},
@@ -148,7 +150,7 @@ function This_MOD.create_recipes()
     for action, propiety in pairs(This_MOD.actions) do
         for _, fluid in pairs(This_MOD.fluids) do
             --- Crear una copia de los datos
-            local Recipe = util.copy(This_MOD.recipe)
+            local Recipe = util.copy(This_MOD.recipe_base)
             local Fluid = util.copy(fluid)
 
             --- Crear el subgroup
@@ -252,6 +254,14 @@ function This_MOD.create_item()
     --- Crear item
     GPrefix.extend(Item)
 
+    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+end
+
+--- Crear la receta
+function This_MOD.create_recipe()
+    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    local Recipe = util.copy(This_MOD.recipe)
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 end
 
