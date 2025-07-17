@@ -31,22 +31,20 @@ end
 function This_MOD.setting_mod()
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    --- Otros valores
-    This_MOD.Prefix   = "zzzYAIM0425-0500-"
-    This_MOD.name     = "free-fluids"
-    This_MOD.all      = GPrefix.Setting[This_MOD.Prefix]["all"]
+    --- Valores de configuración
+    This_MOD.all = GPrefix.Setting[This_MOD.Prefix]["all"]
     This_MOD.quantity = GPrefix.Setting[This_MOD.Prefix]["quantity"]
 
     --- Indicador del MOD
-    local BackColor  = ""
+    local BackColor = ""
 
-    BackColor        = data.raw["virtual-signal"]["signal-deny"].icon
-    This_MOD.delete   = { icon = BackColor, scale = 0.5 }
+    BackColor = data.raw["virtual-signal"]["signal-deny"].icons[1].icon
+    This_MOD.delete = { icon = BackColor, scale = 0.5 }
 
-    BackColor        = data.raw["virtual-signal"]["signal-check"].icon
-    This_MOD.create   = { icon = BackColor, scale = 0.5 }
+    BackColor = data.raw["virtual-signal"]["signal-check"].icons[1].icon
+    This_MOD.create = { icon = BackColor, scale = 0.5 }
 
-    This_MOD.actions  = {
+    This_MOD.actions = {
         ["create"] = "results",
         ["delete"] = "ingredients"
     }
@@ -54,21 +52,21 @@ function This_MOD.setting_mod()
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
     --- Receta base
-    This_MOD.Recipe   = {
-        type                      = "recipe",
-        name                      = "",
-        localised_name            = {},
-        localised_description     = {},
-        energy_required           = 0.002,
+    This_MOD.Recipe = {
+        type = "recipe",
+        name = "",
+        localised_name = {},
+        localised_description = {},
+        energy_required = 0.002,
 
         hide_from_player_crafting = true,
-        enabled                   = true,
-        category                  = "crafting-with-fluid",
-        subgroup                  = "",
-        order                     = "",
+        enabled = true,
+        category = "crafting-with-fluid",
+        subgroup = "",
+        order = "",
 
-        ingredients               = {},
-        results                   = {}
+        ingredients = {},
+        results = {}
     }
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
