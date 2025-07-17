@@ -18,17 +18,22 @@ function This_MOD.start()
     --- Valores de la referencia
     This_MOD.setting_mod()
 
-    -- --- Fluidos a afectar
-    -- This_MOD.getFluids()
+    --- Fluidos a afectar
+    This_MOD.get_fluids()
 
-    -- --- Crear las recetas de los fluidos
-    -- This_MOD.CreateRecipes()
+    --- Crear las recetas de los fluidos
+    This_MOD.CreateRecipes()
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 end
 
 --- Valores de la referencia
 function This_MOD.setting_mod()
+    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    --- Fluidos a duplicar
+    This_MOD.fluids = {}
+
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
     --- Valores de configuración
@@ -52,7 +57,7 @@ function This_MOD.setting_mod()
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
     --- Receta base
-    This_MOD.Recipe = {
+    This_MOD.recipe = {
         type = "recipe",
         name = "",
         localised_name = {},
@@ -74,23 +79,28 @@ end
 
 ---------------------------------------------------------------------------------------------------
 
+
+
+
+
 ---------------------------------------------------------------------------------------------------
 
 --- Fluidos a afectar
-function This_MOD.getFluids()
-    --- Fluidos a duplicar
-    This_MOD.Fluids = {}
+function This_MOD.get_fluids()
+    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
     --- Se desean todos los liquidos
     if This_MOD.all then
-        This_MOD.Fluids = GPrefix.Fluids
+        This_MOD.fluids = GPrefix.fluids
         return
     end
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
     --- Fluidos tomados del suelo
     for _, tile in pairs(data.raw.tile) do
         if tile.fluid then
-            This_MOD.Fluids[tile.fluid] = true
+            This_MOD.fluids[tile.fluid] = true
         end
     end
 
@@ -100,15 +110,19 @@ function This_MOD.getFluids()
         results = results and results.results
         for _, result in pairs(results or {}) do
             if result.type == "fluid" then
-                if result.name then This_MOD.Fluids[result.name] = true end
+                This_MOD.fluids[result.name] = true
             end
         end
     end
 
+    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
     --- Cargar los fluidos encontrados
-    for name, _ in pairs(This_MOD.Fluids) do
-        This_MOD.Fluids[name] = GPrefix.Fluids[name]
+    for name, _ in pairs(This_MOD.fluids) do
+        This_MOD.fluids[name] = GPrefix.fluids[name]
     end
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 end
 
 --- Crear las recetas de los fluidos
@@ -118,9 +132,9 @@ function This_MOD.CreateRecipes()
 
     --- Recorrer los fluidos
     for action, propiety in pairs(This_MOD.actions) do
-        for _, Fluid in pairs(This_MOD.Fluids) do
+        for _, Fluid in pairs(This_MOD.fluids) do
             --- Crear una copia de los datos
-            local recipe   = util.copy(This_MOD.Recipe)
+            local recipe   = util.copy(This_MOD.recipe)
             local fluid    = util.copy(Fluid)
 
             --- Crear el subgroup
@@ -162,9 +176,14 @@ end
 
 ---------------------------------------------------------------------------------------------------
 
+
+
+
+
 ---------------------------------------------------------------------------------------------------
 
 --- Iniciar el modulo
 This_MOD.start()
+ERROR()
 
 ---------------------------------------------------------------------------------------------------
