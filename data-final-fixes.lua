@@ -100,7 +100,7 @@ function This_MOD.setting_mod()
 
         hide_from_player_crafting = true,
         enabled = true,
-        category = "",
+        category = "crafting-with-fluid",
         subgroup = "",
         order = "",
 
@@ -183,7 +183,6 @@ function This_MOD.create_recipes()
             Recipe.order = Fluid.order
 
             Recipe.icons = Fluid.icons
-            Recipe.category = This_MOD.prefix .. action
 
             --- Variaciones entre las recetas
             table.insert(Recipe.icons, This_MOD[action])
@@ -246,6 +245,14 @@ function This_MOD.create_entity()
             type = "recipe-category",
             name = This_MOD.prefix .. action
         })
+    end
+
+    --- Modificar las recetas
+    for action, _ in pairs(This_MOD.actions) do
+        for _, fluid in pairs(This_MOD.fluids) do
+            local Recipe = data.raw.recipe[This_MOD.prefix .. fluid.name .. "-" .. action]
+            Recipe.category = This_MOD.prefix .. action
+        end
     end
 
     --- Crear la entiadad
