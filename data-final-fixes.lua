@@ -54,6 +54,13 @@ function This_MOD.setting_mod()
         ["delete"] = "ingredients"
     }
 
+    --- Indicador de mod
+    This_MOD.indicator = {
+        icon = GPrefix.fluids["water"].icons[1].icon,
+        shift = { 14, -4 },
+        scale = 0.15
+    }
+
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
     --- Receta base
@@ -169,18 +176,31 @@ end
 
 ---------------------------------------------------------------------------------------------------
 
+
+
+
+
+---------------------------------------------------------------------------------------------------
+
 --- Crear las entidades
 function This_MOD.create_entity()
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    local Entity = util.copy(GPrefix.entities[""])
+    --- Duplicar la entidad
+    local Entity = util.copy(GPrefix.entities["assembling-machine-2"])
 
+    --- Nombre de la entidad
     Entity.name = This_MOD.prefix .. Entity.name
+
+    --- Anular los variables
     Entity.fast_replaceable_group = nil
     Entity.next_upgrade = nil
-    Entity.crafting_speed = 0.02
+
+    --- Mejorar los valores
+    -- Entity.crafting_speed = 0.002
     Entity.energy_source = { type = 'void' }
 
+    --- Recetas validas
     Entity.crafting_categories = {}
     for action, _ in pairs(This_MOD.actions) do
         --- Agregar la categoria
@@ -195,6 +215,9 @@ function This_MOD.create_entity()
             name = This_MOD.prefix .. action
         })
     end
+
+    --- Crear la entiadad
+    GPrefix.extend(Entity)
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 end
