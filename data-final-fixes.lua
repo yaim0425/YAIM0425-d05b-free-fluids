@@ -129,11 +129,6 @@ end
 function This_MOD.create_recipes()
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    --- Contenedor de las nuevas recetas
-    local Recipes = {}
-
-    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-
     --- Recorrer los fluidos
     for action, propiety in pairs(This_MOD.actions) do
         for _, fluid in pairs(This_MOD.fluids) do
@@ -165,19 +160,8 @@ function This_MOD.create_recipes()
 
             --- Crear el prototipo
             GPrefix.extend(Recipe)
-
-            --- Guardar la nueva receta
-            Recipes[action] = Recipes[action] or {}
-            table.insert(Recipes[action], Recipe)
         end
     end
-
-    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-
-    -- --- Ordenar las recetas
-    -- for action, _ in pairs(This_MOD.actions) do
-    --     GPrefix.setOrder(Recipes[action])
-    -- end
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 end
@@ -192,6 +176,5 @@ end
 
 --- Iniciar el modulo
 This_MOD.start()
--- ERROR()
 
 ---------------------------------------------------------------------------------------------------
