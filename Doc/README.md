@@ -1,6 +1,6 @@
-![](../../thumbnail.png)
+![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0500-free-fluids/main/thumbnail.png)
 
-# 💧 `zzzYAIM0425 0500 free fluids` [![English Flag](https://flagcdn.com/20x15/gb.png)](../../README.md)
+# 💧 `zzzYAIM0425 0500 free fluids` [![English Flag](https://flagcdn.com/20x15/gb.png)](https://github.com/yaim0425/zzzYAIM0425-0500-free-fluids/blob/main/README.md)
 
 Este MOD, `zzzYAIM0425-0500-free-fluids`, añade recetas para **generar y eliminar fluidos** que existen en la naturaleza dentro del juego Factorio.
 
@@ -25,7 +25,7 @@ El objetivo principal es facilitar el acceso y manejo de fluidos naturales en co
 - Basado en estructuras de la serie `zzzYAIM0425`  
 - Todo su contenido está disponible para quien lo necesite; estoy abierto a cambios, correcciones y sugerencias.
 
-![](./base/Screenshot%20(1).png)  
-![](./base/Screenshot%20(2).png)
-![](./base/Screenshot%20(3).png)
-![](./base/Screenshot%20(4).png)
+![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0500-free-fluids/main/Doc/base/Screenshot%20(1).png)  
+![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0500-free-fluids/main/Doc/base/Screenshot%20(2).png)
+![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0500-free-fluids/main/Doc/base/Screenshot%20(3).png)
+![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0500-free-fluids/main/Doc/base/Screenshot%20(4).png)
