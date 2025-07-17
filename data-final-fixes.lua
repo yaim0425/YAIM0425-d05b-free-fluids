@@ -22,7 +22,7 @@ function This_MOD.start()
     This_MOD.get_fluids()
 
     --- Crear las recetas de los fluidos
-    This_MOD.CreateRecipes()
+    This_MOD.create_recipes()
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 end
@@ -37,8 +37,8 @@ function This_MOD.setting_mod()
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
     --- Valores de configuración
-    This_MOD.all = GPrefix.Setting[This_MOD.Prefix]["all"]
-    This_MOD.quantity = GPrefix.Setting[This_MOD.Prefix]["quantity"]
+    This_MOD.all = GPrefix.Setting[This_MOD.id]["all"]
+    This_MOD.amount = GPrefix.Setting[This_MOD.id]["amount"]
 
     --- Indicador del MOD
     local BackColor = ""
@@ -126,52 +126,60 @@ function This_MOD.get_fluids()
 end
 
 --- Crear las recetas de los fluidos
-function This_MOD.CreateRecipes()
+function This_MOD.create_recipes()
+    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
     --- Contenedor de las nuevas recetas
     local Recipes = {}
 
+    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
     --- Recorrer los fluidos
     for action, propiety in pairs(This_MOD.actions) do
-        for _, Fluid in pairs(This_MOD.fluids) do
+        for _, fluid in pairs(This_MOD.fluids) do
             --- Crear una copia de los datos
-            local recipe   = util.copy(This_MOD.recipe)
-            local fluid    = util.copy(Fluid)
+            local Recipe = util.copy(This_MOD.recipe)
+            local Fluid = util.copy(fluid)
 
             --- Crear el subgroup
-            local subgroup = This_MOD.Prefix .. fluid.subgroup .. "-" .. action
-            GPrefix.duplicate_subgroup(fluid.subgroup, subgroup)
+            local Subgroup = This_MOD.prefix .. Fluid.subgroup .. "-" .. action
+            GPrefix.duplicate_subgroup(Fluid.subgroup, Subgroup)
 
             --- Actualizar los datos
-            recipe.name                  = This_MOD.Prefix .. fluid.name .. "-" .. action
-            recipe.localised_name        = fluid.localised_name
-            recipe.localised_description = fluid.localised_description
+            Recipe.name = This_MOD.prefix .. Fluid.name .. "-" .. action
+            Recipe.localised_name = Fluid.localised_name
+            Recipe.localised_description = Fluid.localised_description
 
-            recipe.subgroup              = subgroup
-            recipe.order                 = fluid.order
+            Recipe.subgroup = Subgroup
+            Recipe.order = Fluid.order
 
-            recipe.icons                 = fluid.icons
+            Recipe.icons = Fluid.icons
 
             --- Variaciones entre las recetas
-            table.insert(recipe.icons, This_MOD[action])
-            recipe[propiety] = { {
+            table.insert(Recipe.icons, This_MOD[action])
+            Recipe[propiety] = { {
                 type = "fluid",
-                name = fluid.name,
-                amount = This_MOD.quantity
+                name = Fluid.name,
+                amount = This_MOD.amount
             } }
 
             --- Crear el prototipo
-            GPrefix.addDataRaw({ recipe })
+            GPrefix.extend(Recipe)
 
             --- Guardar la nueva receta
             Recipes[action] = Recipes[action] or {}
-            table.insert(Recipes[action], recipe)
+            table.insert(Recipes[action], Recipe)
         end
     end
 
-    --- Ordenar las recetas
-    for action, _ in pairs(This_MOD.actions) do
-        GPrefix.setOrder(Recipes[action])
-    end
+    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    -- --- Ordenar las recetas
+    -- for action, _ in pairs(This_MOD.actions) do
+    --     GPrefix.setOrder(Recipes[action])
+    -- end
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 end
 
 ---------------------------------------------------------------------------------------------------
@@ -184,6 +192,6 @@ end
 
 --- Iniciar el modulo
 This_MOD.start()
-ERROR()
+-- ERROR()
 
 ---------------------------------------------------------------------------------------------------
