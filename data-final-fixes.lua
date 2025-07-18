@@ -63,6 +63,7 @@ function This_MOD.setting_mod()
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
     ---> Indicador del MOD
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
     local BackColor = ""
 
     BackColor = data.raw["virtual-signal"]["signal-deny"].icons[1].icon
@@ -71,17 +72,20 @@ function This_MOD.setting_mod()
     BackColor = data.raw["virtual-signal"]["signal-check"].icons[1].icon
     This_MOD.create = { icon = BackColor, scale = 0.5 }
 
-    This_MOD.actions = {
-        ["create"] = "results",
-        ["delete"] = "ingredients"
-    }
+    BackColor = data.raw.fluid["sulfuric-acid"].icons[1].icon
+    This_MOD.indicator = { icon = BackColor, scale = 0.25, shift = { 0, -5 } }
 
-    --- Indicador de mod
-    This_MOD.indicator = {
-        icon = GPrefix.fluids["sulfuric-acid"].icons[1].icon,
-        shift = { 0, -5 },
-        scale = 0.25
-    }
+    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    ---> Acciones
+    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    This_MOD.actions = { }
+    This_MOD.actions.create = "results"
+    This_MOD.actions.delete = "ingredients"
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
