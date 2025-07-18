@@ -83,7 +83,7 @@ function This_MOD.setting_mod()
     ---> Acciones
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    This_MOD.actions = { }
+    This_MOD.actions = {}
     This_MOD.actions.create = "results"
     This_MOD.actions.delete = "ingredients"
 
@@ -103,13 +103,12 @@ function This_MOD.setting_mod()
         energy_required = 0.002,
 
         hide_from_player_crafting = true,
-        enabled = true,
         category = "crafting-with-fluid",
         subgroup = "",
         order = "",
 
         ingredients = {},
-        results = {}
+        results = {},
     }
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
