@@ -215,11 +215,24 @@ end
 function This_MOD.create_entity()
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
+    --- Validar
+    local Name = GPrefix.name .. "-free-" .. This_MOD.entity.name
+    if GPrefix.entities[Name] then
+        --- Modificar las recetas
+        for action, _ in pairs(This_MOD.actions) do
+            for _, fluid in pairs(This_MOD.fluids) do
+                local Recipe = data.raw.recipe[This_MOD.prefix .. fluid.name .. "-" .. action]
+                Recipe.category = GPrefix.name .. "-free-" .. action
+            end
+        end
+        return
+    end
+
     --- Duplicar la entidad
     local Entity = util.copy(This_MOD.entity)
 
     --- Nombre de la entidad
-    Entity.name = This_MOD.prefix .. Entity.name
+    Entity.name = Name
 
     --- Anular los variables
     Entity.fast_replaceable_group = nil
@@ -230,7 +243,7 @@ function This_MOD.create_entity()
     table.insert(Entity.icons, This_MOD.indicator)
     Entity.minable.results = { {
         type = "item",
-        name = This_MOD.prefix .. This_MOD.item.name,
+        name = GPrefix.name .. "-free-" .. This_MOD.item.name,
         amount = 1
     } }
 
@@ -240,19 +253,19 @@ function This_MOD.create_entity()
         --- Agregar la categoria
         table.insert(
             Entity.crafting_categories,
-            This_MOD.prefix .. action
+            GPrefix.name .. "-free-" .. action
         )
 
         --- Crear las categorias
         GPrefix.extend({
             type = "recipe-category",
-            name = This_MOD.prefix .. action
+            name = GPrefix.name .. "-free-" .. action
         })
 
         --- Modificar las recetas
         for _, fluid in pairs(This_MOD.fluids) do
             local Recipe = data.raw.recipe[This_MOD.prefix .. fluid.name .. "-" .. action]
-            Recipe.category = This_MOD.prefix .. action
+            Recipe.category = GPrefix.name .. "-free-" .. action
         end
     end
 
@@ -266,14 +279,18 @@ end
 function This_MOD.create_item()
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
+    --- Validar
+    local Name = GPrefix.name .. "-free-" .. This_MOD.item.name
+    if GPrefix.items[Name] then return end
+
     --- Duplicar la entidad
     local Item = util.copy(This_MOD.item)
 
     --- Nombre de la entidad
-    Item.name = This_MOD.prefix .. Item.name
+    Item.name = Name
 
     --- Cambiar las propiedades
-    Item.place_result = This_MOD.prefix .. Item.place_result
+    Item.place_result = GPrefix.name .. "-free-" .. This_MOD.entity.name
     table.insert(Item.icons, This_MOD.indicator)
 
     --- Crear item
@@ -286,15 +303,19 @@ end
 function This_MOD.create_recipe()
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
+    --- Validar
+    local Name = GPrefix.name .. "-free-" .. This_MOD.recipe.name
+    if data.raw.recipe[Name] then return end
+
     --- Duplicar la receta
     local Recipe = util.copy(This_MOD.recipe)
 
     --- Cambiar los valores
-    Recipe.name = This_MOD.prefix .. Recipe.name
+    Recipe.name = Name
     Recipe.ingredients = {}
     Recipe.results = { {
         type = "item",
-        name = This_MOD.prefix .. This_MOD.item.name,
+        name = GPrefix.name .. "-free-" .. This_MOD.item.name,
         amount = 1
     } }
 
