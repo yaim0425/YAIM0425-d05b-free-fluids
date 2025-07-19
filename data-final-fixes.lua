@@ -53,8 +53,8 @@ function This_MOD.setting_mod()
     ---> Valores de configuración
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    This_MOD.all = GPrefix.Setting[This_MOD.id]["all"]
-    This_MOD.amount = GPrefix.Setting[This_MOD.id]["amount"]
+    This_MOD.all = GPrefix.setting[This_MOD.id]["all"]
+    This_MOD.amount = GPrefix.setting[This_MOD.id]["amount"]
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
@@ -63,6 +63,7 @@ function This_MOD.setting_mod()
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
     ---> Indicador del MOD
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
     local BackColor = ""
 
     BackColor = data.raw["virtual-signal"]["signal-deny"].icons[1].icon
@@ -71,17 +72,23 @@ function This_MOD.setting_mod()
     BackColor = data.raw["virtual-signal"]["signal-check"].icons[1].icon
     This_MOD.create = { icon = BackColor, scale = 0.5 }
 
-    This_MOD.actions = {
-        ["create"] = "results",
-        ["delete"] = "ingredients"
-    }
+    BackColor = data.raw["virtual-signal"]["signal-star"].icons[1].icon
+    This_MOD.indicator = { icon = BackColor, scale = 0.25, shift = { 0, -5 } }
 
-    --- Indicador de mod
-    This_MOD.indicator = {
-        icon = GPrefix.fluids["sulfuric-acid"].icons[1].icon,
-        shift = { 0, -5 },
-        scale = 0.25
-    }
+    BackColor = data.raw["virtual-signal"]["signal-black"].icons[1].icon
+    This_MOD.indicator_back = { icon = BackColor, scale = 0.25, shift = { 0, -5 } }
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    ---> Acciones
+    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    This_MOD.actions = {}
+    This_MOD.actions.create = "results"
+    This_MOD.actions.delete = "ingredients"
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
@@ -99,13 +106,12 @@ function This_MOD.setting_mod()
         energy_required = 0.002,
 
         hide_from_player_crafting = true,
-        enabled = true,
         category = "crafting-with-fluid",
         subgroup = "",
         order = "",
 
         ingredients = {},
-        results = {}
+        results = {},
     }
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -212,11 +218,24 @@ end
 function This_MOD.create_entity()
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
+    --- Validar
+    local Name = GPrefix.name .. "-free-" .. This_MOD.entity.name
+    if GPrefix.entities[Name] then
+        --- Modificar las recetas
+        for action, _ in pairs(This_MOD.actions) do
+            for _, fluid in pairs(This_MOD.fluids) do
+                local Recipe = data.raw.recipe[This_MOD.prefix .. fluid.name .. "-" .. action]
+                Recipe.category = GPrefix.name .. "-free-" .. action
+            end
+        end
+        return
+    end
+
     --- Duplicar la entidad
     local Entity = util.copy(This_MOD.entity)
 
     --- Nombre de la entidad
-    Entity.name = This_MOD.prefix .. Entity.name
+    Entity.name = Name
 
     --- Anular los variables
     Entity.fast_replaceable_group = nil
@@ -224,10 +243,11 @@ function This_MOD.create_entity()
 
     --- Cambiar las propiedades
     Entity.energy_source = { type = "void" }
+    table.insert(Entity.icons, This_MOD.indicator_back)
     table.insert(Entity.icons, This_MOD.indicator)
     Entity.minable.results = { {
         type = "item",
-        name = This_MOD.prefix .. This_MOD.item.name,
+        name = GPrefix.name .. "-free-" .. This_MOD.item.name,
         amount = 1
     } }
 
@@ -237,19 +257,19 @@ function This_MOD.create_entity()
         --- Agregar la categoria
         table.insert(
             Entity.crafting_categories,
-            This_MOD.prefix .. action
+            GPrefix.name .. "-free-" .. action
         )
 
         --- Crear las categorias
         GPrefix.extend({
             type = "recipe-category",
-            name = This_MOD.prefix .. action
+            name = GPrefix.name .. "-free-" .. action
         })
 
         --- Modificar las recetas
         for _, fluid in pairs(This_MOD.fluids) do
             local Recipe = data.raw.recipe[This_MOD.prefix .. fluid.name .. "-" .. action]
-            Recipe.category = This_MOD.prefix .. action
+            Recipe.category = GPrefix.name .. "-free-" .. action
         end
     end
 
@@ -263,14 +283,19 @@ end
 function This_MOD.create_item()
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
+    --- Validar
+    local Name = GPrefix.name .. "-free-" .. This_MOD.item.name
+    if GPrefix.items[Name] then return end
+
     --- Duplicar la entidad
     local Item = util.copy(This_MOD.item)
 
     --- Nombre de la entidad
-    Item.name = This_MOD.prefix .. Item.name
+    Item.name = Name
 
     --- Cambiar las propiedades
-    Item.place_result = This_MOD.prefix .. Item.place_result
+    Item.place_result = GPrefix.name .. "-free-" .. This_MOD.entity.name
+    table.insert(Item.icons, This_MOD.indicator_back)
     table.insert(Item.icons, This_MOD.indicator)
 
     --- Crear item
@@ -283,15 +308,19 @@ end
 function This_MOD.create_recipe()
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
+    --- Validar
+    local Name = GPrefix.name .. "-free-" .. This_MOD.recipe.name
+    if data.raw.recipe[Name] then return end
+
     --- Duplicar la receta
     local Recipe = util.copy(This_MOD.recipe)
 
     --- Cambiar los valores
-    Recipe.name = This_MOD.prefix .. Recipe.name
+    Recipe.name = Name
     Recipe.ingredients = {}
     Recipe.results = { {
         type = "item",
-        name = This_MOD.prefix .. This_MOD.item.name,
+        name = GPrefix.name .. "-free-" .. This_MOD.item.name,
         amount = 1
     } }
 
