@@ -73,10 +73,10 @@ function This_MOD.setting_mod()
     This_MOD.create = { icon = BackColor, scale = 0.5 }
 
     BackColor = data.raw["virtual-signal"]["signal-star"].icons[1].icon
-    This_MOD.indicator_star = { icon = BackColor, scale = 0.25, shift = { 0, -5 } }
+    This_MOD.indicator = { icon = BackColor, scale = 0.25, shift = { 0, -5 } }
 
     BackColor = data.raw["virtual-signal"]["signal-black"].icons[1].icon
-    This_MOD.indicator_black = { icon = BackColor, scale = 0.25, shift = { 0, -5 } }
+    This_MOD.indicator_back = { icon = BackColor, scale = 0.25, shift = { 0, -5 } }
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
@@ -243,8 +243,8 @@ function This_MOD.create_entity()
 
     --- Cambiar las propiedades
     Entity.energy_source = { type = "void" }
-    table.insert(Entity.icons, This_MOD.indicator_black)
-    table.insert(Entity.icons, This_MOD.indicator_star)
+    table.insert(Entity.icons, This_MOD.indicator_back)
+    table.insert(Entity.icons, This_MOD.indicator)
     Entity.minable.results = { {
         type = "item",
         name = GPrefix.name .. "-free-" .. This_MOD.item.name,
@@ -295,8 +295,8 @@ function This_MOD.create_item()
 
     --- Cambiar las propiedades
     Item.place_result = GPrefix.name .. "-free-" .. This_MOD.entity.name
-    table.insert(Item.icons, This_MOD.indicator_black)
-    table.insert(Item.icons, This_MOD.indicator_star)
+    table.insert(Item.icons, This_MOD.indicator_back)
+    table.insert(Item.icons, This_MOD.indicator)
 
     --- Crear item
     GPrefix.extend(Item)
