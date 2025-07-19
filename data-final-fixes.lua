@@ -53,8 +53,8 @@ function This_MOD.setting_mod()
     ---> Valores de configuración
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    This_MOD.all = GPrefix.Setting[This_MOD.id]["all"]
-    This_MOD.amount = GPrefix.Setting[This_MOD.id]["amount"]
+    This_MOD.all = GPrefix.setting[This_MOD.id]["all"]
+    This_MOD.amount = GPrefix.setting[This_MOD.id]["amount"]
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
