@@ -4,7 +4,9 @@
 
 This MOD, `zzzYAIM0425-0500-free-fluids`, adds recipes to **generate and destroy fluids** found in nature in the game Factorio.
 
-> 🧩 This MOD is part of the [zzzYAIM0425 series](https://github.com/yaim0425), designed to offer modular improvements and utilities that enhance the gameplay experience.
+> 🧩 Part of the [zzzYAIM0425 series](https://github.com/yaim0425), designed to offer modular improvements and utilities to enhance the game experience.  
+> 🔧 Depends on [`zzzYAIM0425 0000 lib`](https://github.com/yaim0425/zzzYAIM0425-0000-lib), which is handled automatically by the system.  
+> All its content is available to anyone who needs it; I'm open to changes, corrections, and suggestions.
 
 ## 📦 Purpose
 
