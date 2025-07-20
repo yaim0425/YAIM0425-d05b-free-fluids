@@ -25,6 +25,8 @@ The main goal is to make natural fluids accessible for creative mode, testing en
 - Built upon the shared structures of the `zzzYAIM0425` series  
 - All its content is available to anyone who needs it; I'm open to changes, fixes, and suggestions.
 
+## 🖼️ Screenshots
+
 ![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0500-free-fluids/main/Doc/base/Screenshot%20(1).png)  
 ![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0500-free-fluids/main/Doc/base/Screenshot%20(2).png)
 ![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0500-free-fluids/main/Doc/base/Screenshot%20(3).png)

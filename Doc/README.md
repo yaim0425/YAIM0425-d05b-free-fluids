@@ -25,6 +25,8 @@ El objetivo principal es facilitar el acceso y manejo de fluidos naturales en co
 - Basado en estructuras de la serie `zzzYAIM0425`  
 - Todo su contenido está disponible para quien lo necesite; estoy abierto a cambios, correcciones y sugerencias.
 
+## 🖼️ Capturas
+
 ![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0500-free-fluids/main/Doc/base/Screenshot%20(1).png)  
 ![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0500-free-fluids/main/Doc/base/Screenshot%20(2).png)
 ![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0500-free-fluids/main/Doc/base/Screenshot%20(3).png)
