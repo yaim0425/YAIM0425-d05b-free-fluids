@@ -197,7 +197,8 @@ function This_MOD.create_recipes()
             Recipe[propiety] = { {
                 type = "fluid",
                 name = Fluid.name,
-                amount = This_MOD.amount
+                amount = This_MOD.amount,
+                ignored_by_stats = This_MOD.amount
             } }
 
             --- Crear el prototipo
