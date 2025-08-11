@@ -5,9 +5,9 @@ data:extend({
 		localised_name = { "description.amount" },
 		order = "1",
 		setting_type = "startup",
-		minimum_value = 100,
+		minimum_value = 1000,
 		maximum_value = 65000,
-		default_value = 500
+		default_value = 5000
 	},
 	{
 		type = "bool-setting",
