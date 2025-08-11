@@ -105,7 +105,7 @@ function This_MOD.setting_mod()
         name = "",
         localised_name = {},
         localised_description = {},
-        energy_required = 0.02,
+        energy_required = 30,
 
         hide_from_player_crafting = true,
         category = "crafting-with-fluid",
