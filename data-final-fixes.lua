@@ -18,6 +18,8 @@ function This_MOD.start()
     --- Valores de la referencia
     This_MOD.setting_mod()
 
+    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
     --- Fluidos a afectar
     This_MOD.get_fluids()
 
@@ -64,19 +66,19 @@ function This_MOD.setting_mod()
     ---> Indicador del MOD
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    local BackColor = ""
+    local Signal = ""
 
-    BackColor = data.raw["virtual-signal"]["signal-deny"].icons[1].icon
-    This_MOD.delete = { icon = BackColor, scale = 0.5 }
+    Signal = data.raw["virtual-signal"]["signal-deny"].icons[1].icon
+    This_MOD.delete = { icon = Signal, scale = 0.5 }
 
-    BackColor = data.raw["virtual-signal"]["signal-check"].icons[1].icon
-    This_MOD.create = { icon = BackColor, scale = 0.5 }
+    Signal = data.raw["virtual-signal"]["signal-check"].icons[1].icon
+    This_MOD.create = { icon = Signal, scale = 0.5 }
 
-    BackColor = data.raw["virtual-signal"]["signal-star"].icons[1].icon
-    This_MOD.indicator = { icon = BackColor, scale = 0.25, shift = { 0, -5 } }
+    Signal = data.raw["virtual-signal"]["signal-star"].icons[1].icon
+    This_MOD.indicator = { icon = Signal, scale = 0.25, shift = { 0, -5 } }
 
-    BackColor = data.raw["virtual-signal"]["signal-black"].icons[1].icon
-    This_MOD.indicator_back = { icon = BackColor, scale = 0.25, shift = { 0, -5 } }
+    Signal = data.raw["virtual-signal"]["signal-black"].icons[1].icon
+    This_MOD.indicator_bg = { icon = Signal, scale = 0.25, shift = { 0, -5 } }
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
@@ -103,7 +105,7 @@ function This_MOD.setting_mod()
         name = "",
         localised_name = {},
         localised_description = {},
-        energy_required = 0.002,
+        energy_required = 0.02,
 
         hide_from_player_crafting = true,
         category = "crafting-with-fluid",
@@ -111,7 +113,7 @@ function This_MOD.setting_mod()
         order = "",
 
         ingredients = {},
-        results = {},
+        results = {}
     }
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -195,7 +197,8 @@ function This_MOD.create_recipes()
             Recipe[propiety] = { {
                 type = "fluid",
                 name = Fluid.name,
-                amount = This_MOD.amount
+                amount = This_MOD.amount,
+                ignored_by_stats = This_MOD.amount
             } }
 
             --- Crear el prototipo
@@ -243,7 +246,7 @@ function This_MOD.create_entity()
 
     --- Cambiar las propiedades
     Entity.energy_source = { type = "void" }
-    table.insert(Entity.icons, This_MOD.indicator_back)
+    table.insert(Entity.icons, This_MOD.indicator_bg)
     table.insert(Entity.icons, This_MOD.indicator)
     Entity.minable.results = { {
         type = "item",
@@ -295,7 +298,7 @@ function This_MOD.create_item()
 
     --- Cambiar las propiedades
     Item.place_result = GPrefix.name .. "-free-" .. This_MOD.entity.name
-    table.insert(Item.icons, This_MOD.indicator_back)
+    table.insert(Item.icons, This_MOD.indicator_bg)
     table.insert(Item.icons, This_MOD.indicator)
 
     --- Crear item
