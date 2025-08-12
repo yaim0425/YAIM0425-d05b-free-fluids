@@ -234,7 +234,7 @@ function This_MOD.create_recipes()
                 GPrefix.duplicate_subgroup(Fluid.subgroup, Subgroup)
 
                 --- Actualizar los datos
-                Recipe.name = This_MOD.prefix .. action .. "-" .. This_MOD.amount .. "-" .. Fluid.name .. "-" ..
+                Recipe.name = This_MOD.prefix .. action .. "-" .. This_MOD.amount .. "u-" .. Fluid.name .. "-t" ..
                     (Flag and temperature or Fluid.default_temperature)
                 Recipe.localised_description = Fluid.localised_description
                 Recipe.localised_name = Fluid.localised_name
