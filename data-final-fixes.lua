@@ -88,9 +88,10 @@ function This_MOD.setting_mod()
     ---> Acciones
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    This_MOD.actions = {}
-    This_MOD.actions.create = "results"
-    This_MOD.actions.delete = "ingredients"
+    This_MOD.actions = {
+        create = "results",
+        delete = "ingredients"
+    }
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
@@ -105,7 +106,7 @@ function This_MOD.setting_mod()
         name = "",
         localised_name = {},
         localised_description = {},
-        energy_required = 0.02,
+        energy_required = 1,
 
         hide_from_player_crafting = true,
         category = "crafting-with-fluid",
@@ -131,9 +132,37 @@ end
 function This_MOD.get_fluids()
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
+    --- Fluidos a afectar
+    local Fluids = {}
+    for _, recipes in pairs(GPrefix.recipes) do
+        for _, recipe in pairs(recipes) do
+            for _, elements in pairs({ recipe.ingredients, recipe.results }) do
+                for _, element in pairs(elements) do
+                    if element.type == "fluid" then
+                        local Fluid = GPrefix.fluids[element.name]
+                        local Temperatures = Fluids[element.name] or {}
+                        Fluids[element.name] = Temperatures
+
+                        if element.maximum_temperature then
+                            Temperatures[element.maximum_temperature] = true
+                        elseif element.temperature then
+                            Temperatures[element.temperature] = true
+                        elseif Fluid.max_temperature then
+                            Temperatures[Fluid.max_temperature] = true
+                        elseif Fluid.default_temperature then
+                            Temperatures[Fluid.default_temperature] = true
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
     --- Se desean todos los liquidos
     if This_MOD.all then
-        This_MOD.fluids = GPrefix.fluids
+        This_MOD.fluids = Fluids
         return
     end
 
@@ -142,7 +171,7 @@ function This_MOD.get_fluids()
     --- Fluidos tomados del suelo
     for _, tile in pairs(data.raw.tile) do
         if tile.fluid then
-            This_MOD.fluids[tile.fluid] = true
+            This_MOD.fluids[tile.fluid] = Fluids[tile.fluid]
         end
     end
 
@@ -152,16 +181,9 @@ function This_MOD.get_fluids()
         results = results and results.results
         for _, result in pairs(results or {}) do
             if result.type == "fluid" then
-                This_MOD.fluids[result.name] = true
+                This_MOD.fluids[result.name] = Fluids[result.name]
             end
         end
-    end
-
-    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-
-    --- Cargar los fluidos encontrados
-    for name, _ in pairs(This_MOD.fluids) do
-        This_MOD.fluids[name] = GPrefix.fluids[name]
     end
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -172,37 +194,39 @@ function This_MOD.create_recipes()
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
     --- Recorrer los fluidos
-    for action, propiety in pairs(This_MOD.actions) do
-        for _, fluid in pairs(This_MOD.fluids) do
-            --- Crear una copia de los datos
-            local Recipe = util.copy(This_MOD.recipe_base)
-            local Fluid = util.copy(fluid)
+    for fluid, temperatures in pairs(This_MOD.fluids) do
+        for temperature, _ in pairs(temperatures) do
+            for action, propiety in pairs(This_MOD.actions) do
+                --- Crear una copia de los datos
+                local Recipe = util.copy(This_MOD.recipe_base)
+                local Fluid = GPrefix.fluids[fluid]
 
-            --- Crear el subgroup
-            local Subgroup = This_MOD.prefix .. Fluid.subgroup .. "-" .. action
-            GPrefix.duplicate_subgroup(Fluid.subgroup, Subgroup)
+                --- Crear el subgroup
+                local Subgroup = This_MOD.prefix .. Fluid.subgroup .. "-" .. action
+                GPrefix.duplicate_subgroup(Fluid.subgroup, Subgroup)
 
-            --- Actualizar los datos
-            Recipe.name = This_MOD.prefix .. Fluid.name .. "-" .. action
-            Recipe.localised_name = Fluid.localised_name
-            Recipe.localised_description = Fluid.localised_description
+                --- Actualizar los datos
+                Recipe.name = This_MOD.prefix .. Fluid.name .. "-" .. action .. "-" .. temperature
+                Recipe.localised_description = Fluid.localised_description
+                Recipe.localised_name = Fluid.localised_name
 
-            Recipe.subgroup = Subgroup
-            Recipe.order = Fluid.order
+                Recipe.subgroup = Subgroup
+                Recipe.order = Fluid.order
 
-            Recipe.icons = Fluid.icons
+                Recipe.icons = util.copy(Fluid.icons)
 
-            --- Variaciones entre las recetas
-            table.insert(Recipe.icons, This_MOD[action])
-            Recipe[propiety] = { {
-                type = "fluid",
-                name = Fluid.name,
-                amount = This_MOD.amount,
-                ignored_by_stats = This_MOD.amount
-            } }
+                --- Variaciones entre las recetas
+                table.insert(Recipe.icons, This_MOD[action])
+                Recipe[propiety] = { {
+                    type = "fluid",
+                    name = Fluid.name,
+                    amount = This_MOD.amount,
+                    ignored_by_stats = This_MOD.amount
+                } }
 
-            --- Crear el prototipo
-            GPrefix.extend(Recipe)
+                --- Crear el prototipo
+                GPrefix.extend(Recipe)
+            end
         end
     end
 
@@ -270,9 +294,17 @@ function This_MOD.create_entity()
         })
 
         --- Modificar las recetas
-        for _, fluid in pairs(This_MOD.fluids) do
-            local Recipe = data.raw.recipe[This_MOD.prefix .. fluid.name .. "-" .. action]
-            Recipe.category = GPrefix.name .. "-free-" .. action
+        for fluid, temperatures in pairs(This_MOD.fluids) do
+            for temperature, _ in pairs(temperatures) do
+                fluid = GPrefix.fluids[fluid]
+                fluid =
+                    This_MOD.prefix ..
+                    fluid.name .. "-" ..
+                    action .. "-" ..
+                    temperature
+                local Recipe = data.raw.recipe[fluid]
+                Recipe.category = GPrefix.name .. "-free-" .. action
+            end
         end
     end
 
