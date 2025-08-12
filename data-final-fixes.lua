@@ -148,13 +148,34 @@ function This_MOD.get_fluids()
                             Temperatures[element.maximum_temperature] = true
                         elseif element.temperature then
                             Temperatures[element.temperature] = true
-                        elseif Fluid.max_temperature then
-                            Temperatures[Fluid.max_temperature] = true
+                            -- elseif Fluid.max_temperature then
+                            --     Temperatures[Fluid.max_temperature] = true
                         end
                     end
                 end
             end
         end
+    end
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    --- Fluidos que se crean sin recetas
+    for _, entity in pairs(GPrefix.entities) do
+        repeat
+            --- Validación
+            if not entity.output_fluid_box then break end
+            if entity.output_fluid_box.pipe_connections == 0 then break end
+            if not entity.output_fluid_box.filter then break end
+            if not entity.target_temperature then break end
+
+            --- Renombrar variable
+            local Name = entity.output_fluid_box.filter
+
+            --- Guardar la temperatura
+            local Temperatures = Fluids[Name] or {}
+            Fluids[Name] = Temperatures
+            Temperatures[entity.target_temperature] = true
+        until true
     end
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -215,7 +236,7 @@ function This_MOD.create_recipes()
 
                 --- Actualizar los datos
                 Recipe.name = This_MOD.prefix .. Fluid.name .. "-" .. action ..
-                    (GPrefix.is_string(temperature) and "" or "-" .. temperature)
+                    ((action == "create" and not GPrefix.is_string(temperature)) and "-" .. temperature or "")
                 Recipe.localised_description = Fluid.localised_description
                 Recipe.localised_name = Fluid.localised_name
 
