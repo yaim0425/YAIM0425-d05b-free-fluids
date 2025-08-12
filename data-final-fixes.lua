@@ -255,7 +255,7 @@ function This_MOD.create_recipes()
                 } }
 
                 --- Guardar la recetas creadas
-                table.insert(This_MOD.recipes[action], Recipe.name)
+                table.insert(This_MOD.recipes[action], Recipe)
 
                 --- Crear el prototipo
                 GPrefix.extend(Recipe)
@@ -327,9 +327,8 @@ function This_MOD.create_entity()
         })
 
         --- Modificar las recetas
-        for _, name in pairs(This_MOD.recipes[action]) do
-            local Recipe = data.raw.recipe[name]
-            Recipe.category = GPrefix.name .. "-free-" .. action
+        for _, recipe in pairs(This_MOD.recipes[action]) do
+            recipe.category = GPrefix.name .. "-free-" .. action
         end
     end
 
