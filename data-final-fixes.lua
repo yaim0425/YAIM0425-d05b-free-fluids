@@ -90,8 +90,8 @@ function This_MOD.setting_mod()
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
     This_MOD.actions = {
-        create = "results",
-        delete = "ingredients"
+        delete = "ingredients",
+        create = "results"
     }
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -140,7 +140,6 @@ function This_MOD.get_fluids()
             for _, elements in pairs({ recipe.ingredients, recipe.results }) do
                 for _, element in pairs(elements) do
                     if element.type == "fluid" then
-                        local Fluid = GPrefix.fluids[element.name]
                         local Temperatures = Fluids[element.name] or {}
                         Fluids[element.name] = Temperatures
 
@@ -148,8 +147,6 @@ function This_MOD.get_fluids()
                             Temperatures[element.maximum_temperature] = true
                         elseif element.temperature then
                             Temperatures[element.temperature] = true
-                            -- elseif Fluid.max_temperature then
-                            --     Temperatures[Fluid.max_temperature] = true
                         end
                     end
                 end
@@ -180,7 +177,7 @@ function This_MOD.get_fluids()
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    --- sada
+    --- Cambiar los valores vacios
     for key, value in pairs(Fluids) do
         if not GPrefix.get_length(value) then
             Fluids[key] = false
@@ -224,8 +221,10 @@ function This_MOD.create_recipes()
 
     --- Recorrer los fluidos
     for fluid, temperatures in pairs(This_MOD.fluids) do
-        for temperature, _ in pairs(temperatures or { [""] = true }) do
+        for temperature, _ in pairs(temperatures or { [false] = true }) do
             for action, propiety in pairs(This_MOD.actions) do
+                local Flag = propiety == This_MOD.actions.create and temperature
+
                 --- Crear una copia de los datos
                 local Recipe = util.copy(This_MOD.recipe_base)
                 local Fluid = GPrefix.fluids[fluid]
@@ -235,8 +234,8 @@ function This_MOD.create_recipes()
                 GPrefix.duplicate_subgroup(Fluid.subgroup, Subgroup)
 
                 --- Actualizar los datos
-                Recipe.name = This_MOD.prefix .. Fluid.name .. "-" .. action ..
-                    ((action == "create" and not GPrefix.is_string(temperature)) and "-" .. temperature or "")
+                Recipe.name = This_MOD.prefix .. action .. "-" .. This_MOD.amount .. "-" .. Fluid.name .. "-" ..
+                    (Flag and temperature or Fluid.default_temperature)
                 Recipe.localised_description = Fluid.localised_description
                 Recipe.localised_name = Fluid.localised_name
 
@@ -251,7 +250,7 @@ function This_MOD.create_recipes()
                     type = "fluid",
                     name = Fluid.name,
                     amount = This_MOD.amount,
-                    temperature = (action == "create" and not GPrefix.is_string(temperature)) and temperature or nil,
+                    temperature = Flag and temperature or nil,
                     ignored_by_stats = This_MOD.amount
                 } }
 
