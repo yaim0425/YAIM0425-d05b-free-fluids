@@ -43,6 +43,7 @@ function This_MOD.setting_mod()
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
     This_MOD.fluids = {}
+    This_MOD.recipes = { create = {}, delete = {} }
     This_MOD.entity = GPrefix.entities["assembling-machine-2"]
     This_MOD.item = GPrefix.get_item_create_entity(This_MOD.entity)
     This_MOD.recipe = GPrefix.recipes[This_MOD.item.name][1]
@@ -149,12 +150,19 @@ function This_MOD.get_fluids()
                             Temperatures[element.temperature] = true
                         elseif Fluid.max_temperature then
                             Temperatures[Fluid.max_temperature] = true
-                        elseif Fluid.default_temperature then
-                            Temperatures[Fluid.default_temperature] = true
                         end
                     end
                 end
             end
+        end
+    end
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    --- sada
+    for key, value in pairs(Fluids) do
+        if not GPrefix.get_length(value) then
+            Fluids[key] = false
         end
     end
 
@@ -195,7 +203,7 @@ function This_MOD.create_recipes()
 
     --- Recorrer los fluidos
     for fluid, temperatures in pairs(This_MOD.fluids) do
-        for temperature, _ in pairs(temperatures) do
+        for temperature, _ in pairs(temperatures or { [""] = true }) do
             for action, propiety in pairs(This_MOD.actions) do
                 --- Crear una copia de los datos
                 local Recipe = util.copy(This_MOD.recipe_base)
@@ -206,7 +214,8 @@ function This_MOD.create_recipes()
                 GPrefix.duplicate_subgroup(Fluid.subgroup, Subgroup)
 
                 --- Actualizar los datos
-                Recipe.name = This_MOD.prefix .. Fluid.name .. "-" .. action .. "-" .. temperature
+                Recipe.name = This_MOD.prefix .. Fluid.name .. "-" .. action ..
+                    (GPrefix.is_string(temperature) and "" or "-" .. temperature)
                 Recipe.localised_description = Fluid.localised_description
                 Recipe.localised_name = Fluid.localised_name
 
@@ -221,9 +230,12 @@ function This_MOD.create_recipes()
                     type = "fluid",
                     name = Fluid.name,
                     amount = This_MOD.amount,
-                    temperature = temperature,
+                    temperature = (action == "create" and not GPrefix.is_string(temperature)) and temperature or nil,
                     ignored_by_stats = This_MOD.amount
                 } }
+
+                --- Guardar la recetas creadas
+                table.insert(This_MOD.recipes[action], Recipe.name)
 
                 --- Crear el prototipo
                 GPrefix.extend(Recipe)
@@ -295,17 +307,9 @@ function This_MOD.create_entity()
         })
 
         --- Modificar las recetas
-        for fluid, temperatures in pairs(This_MOD.fluids) do
-            fluid = GPrefix.fluids[fluid].name
-            for temperature, _ in pairs(temperatures) do
-                Name =
-                    This_MOD.prefix ..
-                    fluid .. "-" ..
-                    action .. "-" ..
-                    temperature
-                local Recipe = data.raw.recipe[Name]
-                Recipe.category = GPrefix.name .. "-free-" .. action
-            end
+        for _, name in pairs(This_MOD.recipes[action]) do
+            local Recipe = data.raw.recipe[name]
+            Recipe.category = GPrefix.name .. "-free-" .. action
         end
     end
 
