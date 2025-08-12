@@ -221,7 +221,7 @@ function This_MOD.create_recipes()
                     type = "fluid",
                     name = Fluid.name,
                     amount = This_MOD.amount,
-                    temperature = temperature or nil,
+                    temperature = temperature,
                     ignored_by_stats = This_MOD.amount
                 } }
 
