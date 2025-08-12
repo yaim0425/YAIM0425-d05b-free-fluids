@@ -295,14 +295,14 @@ function This_MOD.create_entity()
 
         --- Modificar las recetas
         for fluid, temperatures in pairs(This_MOD.fluids) do
+            fluid = GPrefix.fluids[fluid].name
             for temperature, _ in pairs(temperatures) do
-                fluid = GPrefix.fluids[fluid]
-                fluid =
+                Name =
                     This_MOD.prefix ..
-                    fluid.name .. "-" ..
+                    fluid .. "-" ..
                     action .. "-" ..
                     temperature
-                local Recipe = data.raw.recipe[fluid]
+                local Recipe = data.raw.recipe[Name]
                 Recipe.category = GPrefix.name .. "-free-" .. action
             end
         end
