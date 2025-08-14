@@ -235,7 +235,7 @@ function This_MOD.create_recipes()
 
                 --- Actualizar los datos
                 Recipe.name = This_MOD.prefix .. action .. "-" .. This_MOD.amount .. "u-" .. Fluid.name ..
-                    (Flag and "-t" .. temperature or "")
+                    (Flag and "-t" .. math.floor(temperature or 0) or "")
                 Recipe.localised_description = Fluid.localised_description
                 Recipe.localised_name = Fluid.localised_name
 
