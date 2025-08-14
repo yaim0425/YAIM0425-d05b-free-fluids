@@ -7,3 +7,5 @@
 ![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0500-free-fluids/main/Doc/factorioplus/(7).png)
 ![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0500-free-fluids/main/Doc/factorioplus/(8).png)
 ![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0500-free-fluids/main/Doc/factorioplus/(9).png)
+![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0500-free-fluids/main/Doc/factorioplus/(10).png)  
+![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0500-free-fluids/main/Doc/factorioplus/(11).png)  
