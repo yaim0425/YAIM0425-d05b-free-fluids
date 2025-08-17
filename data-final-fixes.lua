@@ -67,7 +67,7 @@ function This_MOD.setting_mod()
     ---> Indicador del MOD
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    local Signal = ""
+    local Signal
 
     Signal = data.raw["virtual-signal"]["signal-deny"].icons[1].icon
     This_MOD.delete = { icon = Signal, scale = 0.5 }
