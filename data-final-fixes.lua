@@ -227,7 +227,7 @@ function This_MOD.create_recipes()
 
                 --- Crear una copia de los datos
                 local Recipe = util.copy(This_MOD.recipe_base)
-                local Fluid = GPrefix.fluids[fluid]
+                local Fluid = util.copy(GPrefix.fluids[fluid])
 
                 --- Crear el subgroup
                 local Subgroup = This_MOD.prefix .. Fluid.subgroup .. "-" .. action
@@ -242,7 +242,7 @@ function This_MOD.create_recipes()
                 Recipe.subgroup = Subgroup
                 Recipe.order = Fluid.order
 
-                Recipe.icons = util.copy(Fluid.icons)
+                Recipe.icons = Fluid.icons
 
                 --- Variaciones entre las recetas
                 table.insert(Recipe.icons, This_MOD[action])
