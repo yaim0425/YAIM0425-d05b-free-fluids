@@ -47,7 +47,7 @@ table.insert(This_MOD.setting, {
 
 ---------------------------------------------------------------------------------------------------
 
---- Establecer el order
+--- Información adicional
 for order, setting in pairs(This_MOD.setting) do
 	setting.type = setting.type .. "-setting"
 	setting.name = This_MOD.prefix .. setting.name
