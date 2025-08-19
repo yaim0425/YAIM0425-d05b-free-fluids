@@ -6,4 +6,3 @@
 ![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0500-free-fluids/main/Doc/Krastorio2/(6).png)
 ![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0500-free-fluids/main/Doc/Krastorio2/(7).png)
 ![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0500-free-fluids/main/Doc/Krastorio2/(8).png)
-![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0500-free-fluids/main/Doc/Krastorio2/(9).png)
