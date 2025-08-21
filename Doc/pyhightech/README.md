@@ -8,6 +8,3 @@
 ![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0500-free-fluids/main/Doc/pyhightech/(8).png)
 ![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0500-free-fluids/main/Doc/pyhightech/(9).png)
 ![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0500-free-fluids/main/Doc/pyhightech/(10).png)  
-![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0500-free-fluids/main/Doc/pyhightech/(11).png)  
-![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0500-free-fluids/main/Doc/pyhightech/(12).png)  
-![](https://raw.githubusercontent.com/yaim0425/zzzYAIM0425-0500-free-fluids/main/Doc/pyhightech/(13).png)  
