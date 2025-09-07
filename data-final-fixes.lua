@@ -67,7 +67,7 @@ function This_MOD.setting_mod()
     ---> Indicador del MOD
     --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    local Signal = ""
+    local Signal
 
     Signal = data.raw["virtual-signal"]["signal-deny"].icons[1].icon
     This_MOD.delete = { icon = Signal, scale = 0.5 }
@@ -226,8 +226,8 @@ function This_MOD.create_recipes()
                 local Flag = propiety == This_MOD.actions.create and temperature
 
                 --- Crear una copia de los datos
-                local Recipe = util.copy(This_MOD.recipe_base)
-                local Fluid = GPrefix.fluids[fluid]
+                local Recipe = GPrefix.copy(This_MOD.recipe_base)
+                local Fluid = GPrefix.copy(GPrefix.fluids[fluid])
 
                 --- Crear el subgroup
                 local Subgroup = This_MOD.prefix .. Fluid.subgroup .. "-" .. action
@@ -242,7 +242,7 @@ function This_MOD.create_recipes()
                 Recipe.subgroup = Subgroup
                 Recipe.order = Fluid.order
 
-                Recipe.icons = util.copy(Fluid.icons)
+                Recipe.icons = Fluid.icons
 
                 --- Variaciones entre las recetas
                 table.insert(Recipe.icons, This_MOD[action])
@@ -292,7 +292,7 @@ function This_MOD.create_entity()
     end
 
     --- Duplicar la entidad
-    local Entity = util.copy(This_MOD.entity)
+    local Entity = GPrefix.copy(This_MOD.entity)
 
     --- Nombre de la entidad
     Entity.name = Name
@@ -347,7 +347,7 @@ function This_MOD.create_item()
     if GPrefix.items[Name] then return end
 
     --- Duplicar la entidad
-    local Item = util.copy(This_MOD.item)
+    local Item = GPrefix.copy(This_MOD.item)
 
     --- Nombre de la entidad
     Item.name = Name
@@ -372,7 +372,7 @@ function This_MOD.create_recipe()
     if data.raw.recipe[Name] then return end
 
     --- Duplicar la receta
-    local Recipe = util.copy(This_MOD.recipe)
+    local Recipe = GPrefix.copy(This_MOD.recipe)
 
     --- Cambiar los valores
     Recipe.name = Name
