@@ -92,6 +92,16 @@ function This_MOD.setting_mod()
     This_MOD.setting = GMOD.setting[This_MOD.id]
 
     --- Indicador del mod
+    This_MOD.delete = {
+        icon = data.raw["virtual-signal"]["signal-deny"].icons[1].icon,
+        scale = 0.5
+    }
+
+    This_MOD.create = {
+        icon = data.raw["virtual-signal"]["signal-check"].icons[1].icon,
+        scale = 0.5
+    }
+
     This_MOD.indicator = {
         icon = data.raw["virtual-signal"]["signal-star"].icons[1].icon,
         scale = 0.25,
