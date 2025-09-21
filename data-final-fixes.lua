@@ -127,8 +127,8 @@ function This_MOD.setting_mod()
     This_MOD.fluids = {}
 
     --- Valores de referencia
-    This_MOD.entity_name = "assembling-machine-2"
-    This_MOD.new_entity_name = GMOD.name .. "-free-" .. This_MOD.entity_name
+    This_MOD.old_entity_name = "assembling-machine-2"
+    This_MOD.new_entity_name = GMOD.name .. "-free-" .. This_MOD.old_entity_name
     This_MOD.new_localised_name = { "", { "entity-name.market" } }
 
     --- Acciones
@@ -363,8 +363,8 @@ function This_MOD.get_elements()
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
     valide(
-        GMOD.items[This_MOD.entity_name],
-        GMOD.entities[This_MOD.entity_name]
+        GMOD.items[This_MOD.old_entity_name],
+        GMOD.entities[This_MOD.old_entity_name]
     )
 
     get_fluids(This_MOD.fluids)
