@@ -30,29 +30,29 @@ function This_MOD.start()
     --- Valores de la referencia
     This_MOD.setting_mod()
 
-    -- --- Obtener los elementos
-    -- This_MOD.get_elements()
+    --- Obtener los elementos
+    This_MOD.get_elements()
 
-    -- --- Modificar los elementos
-    -- for iKey, spaces in pairs(This_MOD.to_be_processed) do
-    --     for jKey, space in pairs(spaces) do
-    --         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    --- Modificar los elementos
+    for iKey, spaces in pairs(This_MOD.to_be_processed) do
+        for jKey, space in pairs(spaces) do
+            --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    --         --- Marcar como procesado
-    --         This_MOD.processed[iKey] = This_MOD.processed[iKey] or {}
-    --         This_MOD.processed[iKey][jKey] = true
+            --- Marcar como procesado
+            This_MOD.processed[iKey] = This_MOD.processed[iKey] or {}
+            This_MOD.processed[iKey][jKey] = true
 
-    --         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+            --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    --         --- Crear los elementos
-    --         This_MOD.create_item(space)
-    --         This_MOD.create_entity(space)
-    --         This_MOD.create_recipe(space)
-    --         This_MOD.create_tech(space)
+            --- Crear los elementos
+            This_MOD.create_item(space)
+            This_MOD.create_entity(space)
+            -- This_MOD.create_recipe(space)
+            -- This_MOD.create_tech(space)
 
-    --         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-    --     end
-    -- end
+            --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        end
+    end
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 end
@@ -93,10 +93,15 @@ function This_MOD.setting_mod()
 
     --- Indicador del mod
     This_MOD.indicator = {
-        icon = GMOD.entities["assembling-machine-2"].icons[1].icon,
-        icon_size = 64,
+        icon = data.raw["virtual-signal"]["signal-star"].icons[1].icon,
         scale = 0.25,
-        shift = { 12, -12 }
+        shift = { 0, -5 }
+    }
+
+    This_MOD.indicator_bg = {
+        icon = data.raw["virtual-signal"]["signal-black"].icons[1].icon,
+        scale = 0.25,
+        shift = { 0, -5 }
     }
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -116,6 +121,29 @@ function This_MOD.setting_mod()
     --- Prototipos de referencia
     This_MOD.entity = GMOD.entities[This_MOD.entity_name]
     This_MOD.item = GMOD.items[This_MOD.entity_name]
+
+    --- Acciones
+    This_MOD.actions = {
+        delete = "ingredients",
+        create = "results"
+    }
+
+    --- Receta base
+    This_MOD.recipe_base = {
+        type = "recipe",
+        name = "",
+        localised_name = {},
+        localised_description = {},
+        energy_required = 1,
+
+        hide_from_player_crafting = true,
+        category = "crafting-with-fluid",
+        subgroup = "",
+        order = "",
+
+        ingredients = {},
+        results = {}
+    }
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 end
@@ -141,8 +169,8 @@ function This_MOD.get_elements()
 
     --- Validar valores de referencia
     if GMOD.entities[This_MOD.new_entity_name] then return end
-    if entity then return end
-    if item then return end
+    if not entity then return end
+    if not item then return end
 
     --- Validar si ya fue procesado
     if
@@ -183,6 +211,174 @@ function This_MOD.get_elements()
 
     This_MOD.to_be_processed[entity.type] = This_MOD.to_be_processed[entity.type] or {}
     This_MOD.to_be_processed[entity.type][entity.name] = Space
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+end
+
+---------------------------------------------------------------------------
+
+function This_MOD.create_item(space)
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    --- Validación
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    if not space.item then return end
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    --- Duplicar el elemento
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    local Item = GMOD.copy(space.item)
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    --- Cambiar algunas propiedades
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    Item.name = space.prefix
+
+    Item.localised_name = GMOD.copy(space.entity.localised_name)
+
+    local Order = tonumber(Item.order) + 1
+    Item.order = GMOD.pad_left_zeros(#Item.order, Order)
+
+    table.insert(Item.icons, This_MOD.indicator_bg)
+    table.insert(Item.icons, This_MOD.indicator)
+
+    Item.place_result = Item.name
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    ---- Crear el prototipo
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    GMOD.extend(Item)
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+end
+
+function This_MOD.create_entity(space)
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    --- Validación
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    if not space.entity then return end
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    --- Agregar las recetas a la entidad existente
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    if space.entity[This_MOD.new_entity_name] then
+        local Entity = space.entity[This_MOD.new_entity_name]
+        for action, _ in pairs(This_MOD.actions) do
+            table.insert(
+                Entity.crafting_categories,
+                This_MOD.prefix .. action
+            )
+
+            GMOD.extend({
+                type = "recipe-category",
+                name = This_MOD.prefix .. action
+            })
+        end
+        return
+    end
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    --- Duplicar el elemento
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    local Entity = GMOD.copy(space.entity)
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    --- Cambiar algunas propiedades
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    Entity.name = space.prefix
+
+    Entity.minable.results = { {
+        type = "item",
+        name = Entity.name,
+        amount = 1
+    } }
+
+    Entity.fast_replaceable_group = nil
+    Entity.next_upgrade = nil
+
+    Entity.energy_source = { type = "void" }
+
+    Entity.crafting_categories = {}
+    for action, _ in pairs(This_MOD.actions) do
+        table.insert(
+            Entity.crafting_categories,
+            This_MOD.prefix .. action
+        )
+
+        GMOD.extend({
+            type = "recipe-category",
+            name = This_MOD.prefix .. action
+        })
+    end
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    --- Agregar los indicadores del mod
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    Entity.icons = GMOD.copy(space.item.icons)
+    table.insert(Entity.icons, This_MOD.indicator_bg)
+    table.insert(Entity.icons, This_MOD.indicator)
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    --- Crear el prototipo
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    GMOD.extend(Entity)
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 end
