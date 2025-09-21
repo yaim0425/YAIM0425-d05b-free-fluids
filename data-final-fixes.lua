@@ -51,6 +51,7 @@ function This_MOD.start()
 
             --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
+            --- Crear las recetas para los fluidos
             This_MOD.create_recipe_to_fluids()
 
             --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -75,6 +76,7 @@ function This_MOD.setting_mod()
     --- Validar si se cargó antes
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
+    This_MOD.fluids = {}
     This_MOD.to_be_processed = {}
     if This_MOD.processed then return end
 
@@ -126,9 +128,6 @@ function This_MOD.setting_mod()
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
     --- Valores de la referencia en este MOD
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-
-    --- Contenedor de los fluidos a afectar
-    This_MOD.fluids = {}
 
     --- Valores de referencia
     This_MOD.old_entity_name = "assembling-machine-2"
