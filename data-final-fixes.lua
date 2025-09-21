@@ -47,8 +47,7 @@ function This_MOD.start()
             --- Crear los elementos
             This_MOD.create_item(space)
             This_MOD.create_entity(space)
-            -- This_MOD.create_recipe(space)
-            -- This_MOD.create_tech(space)
+            This_MOD.create_recipe(space)
 
             --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
         end
@@ -315,7 +314,9 @@ function This_MOD.get_elements()
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
         if This_MOD.setting.all then
-            fluids = Fluids
+            for key, value in pairs(Fluids) do
+                fluids[key] = value
+            end
             return
         end
 
@@ -534,6 +535,199 @@ function This_MOD.create_entity(space)
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
     GMOD.extend(Entity)
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+end
+
+function This_MOD.create_recipe(space)
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    --- Validación
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    if not space.recipe then return end
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    --- Receta para la entidad
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    local function entity()
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Duplicar el elemento
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        local Recipe = GMOD.copy(space.recipe)
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Cambiar algunas propiedades
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        Recipe.name = space.prefix
+
+        Recipe.main_product = nil
+        Recipe.maximum_productivity = 1000000
+        Recipe.enabled = true
+
+        Recipe.icons = GMOD.copy(space.item.icons)
+        table.insert(Recipe.icons, This_MOD.indicator_bg)
+        table.insert(Recipe.icons, This_MOD.indicator)
+
+        local Order = tonumber(Recipe.order) + 1
+        Recipe.order = GMOD.pad_left_zeros(#Recipe.order, Order)
+
+        Recipe.ingredients = {}
+
+        Recipe.results = { {
+            type = "item",
+            name = Recipe.name,
+            amount = 1
+        } }
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        ---- Crear el prototipo
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        GMOD.extend(Recipe)
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    end
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    --- Recetas de los fluidos
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    local function fluids()
+        for fluid, temperatures in pairs(This_MOD.fluids) do
+            for temperature, _ in pairs(temperatures or { [false] = true }) do
+                for action, propiety in pairs(This_MOD.actions) do
+                    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+                    --- Valores a usar
+                    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+                    local Flag = propiety == This_MOD.actions.create and temperature
+                    local Recipe = GMOD.copy(This_MOD.recipe_base)
+                    local Fluid = GMOD.copy(GMOD.fluids[fluid])
+
+                    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+                    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+                    --- Crear el subgroup
+                    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+                    local Subgroup = This_MOD.prefix .. Fluid.subgroup .. "-" .. action
+                    GMOD.duplicate_subgroup(Fluid.subgroup, Subgroup)
+
+                    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+                    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+                    --- Actualizar los datos
+                    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+                    Recipe.name = This_MOD.prefix .. action .. "-" .. This_MOD.setting.amount .. "u-" .. Fluid.name ..
+                        (Flag and "-t" .. math.floor(temperature or 0) or "")
+                    Recipe.localised_description = Fluid.localised_description
+                    Recipe.localised_name = Fluid.localised_name
+
+                    Recipe.subgroup = Subgroup
+                    Recipe.order = Fluid.order
+
+                    Recipe.icons = Fluid.icons
+
+                    Recipe.category = This_MOD.prefix .. action
+
+                    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+                    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+                    --- Variaciones entre las recetas
+                    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+                    table.insert(Recipe.icons, This_MOD[action])
+                    Recipe[propiety] = { {
+                        type = "fluid",
+                        name = Fluid.name,
+                        amount = This_MOD.setting.amount,
+                        temperature = Flag and temperature or nil,
+                        ignored_by_stats = This_MOD.setting.amount
+                    } }
+
+                    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+                    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+                    --- Guardar la recetas creadas
+                    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+                    This_MOD.processed.fluids = This_MOD.processed.fluids or {}
+                    This_MOD.processed.fluids[Fluid.name] = true
+
+                    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+                    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+                    --- Crear el prototipo
+                    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+                    GMOD.extend(Recipe)
+
+                    --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+                end
+            end
+        end
+    end
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    --- Crear las recetas
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    entity()
+    fluids()
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 end
