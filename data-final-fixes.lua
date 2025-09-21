@@ -171,7 +171,7 @@ function This_MOD.get_elements()
     --- Función para analizar cada entidad
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    local function valide(item, entity)
+    local function valide_entity(item, entity)
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
         --- Validación
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -361,7 +361,7 @@ function This_MOD.get_elements()
     --- Valores a afectar
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    valide(
+    valide_entity(
         GMOD.items[This_MOD.old_entity_name],
         GMOD.entities[This_MOD.old_entity_name]
     )
