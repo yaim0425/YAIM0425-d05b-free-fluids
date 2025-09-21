@@ -146,7 +146,6 @@ function This_MOD.setting_mod()
         energy_required = 1,
 
         hide_from_player_crafting = true,
-        category = "crafting-with-fluid",
         subgroup = "",
         order = "",
 
