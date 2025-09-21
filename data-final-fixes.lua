@@ -728,12 +728,17 @@ function This_MOD.create_recipe_to_fluids()
 
     local Category = GMOD.entities[This_MOD.new_entity_name].crafting_categories
     for action, _ in pairs(This_MOD.actions) do
+        local Name = This_MOD.prefix .. action
+        if GMOD.get_key(Category, Name) then
+            break
+        end
+
         GMOD.extend({
             type = "recipe-category",
-            name = This_MOD.prefix .. action
+            name = Name
         })
 
-        table.insert(Category, This_MOD.prefix .. action)
+        table.insert(Category, Name)
     end
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
