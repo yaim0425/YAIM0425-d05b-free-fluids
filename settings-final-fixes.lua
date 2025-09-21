@@ -39,6 +39,14 @@ GMOD[This_MOD.id] = This_MOD
 --- Opciones
 This_MOD.setting = {}
 
+--- Opcion: all
+table.insert(This_MOD.setting, {
+	type = "bool",
+	name = "all",
+	localised_name = { "gui-blueprint-library.shelf-choice-all" },
+	default_value = false
+})
+
 --- Opcion: amount
 table.insert(This_MOD.setting, {
 	type = "int",
@@ -47,14 +55,6 @@ table.insert(This_MOD.setting, {
 	minimum_value = 1000,
 	maximum_value = 65000,
 	default_value = 1000
-})
-
---- Opcion: all
-table.insert(This_MOD.setting, {
-	type = "bool",
-	name = "all",
-	localised_name = { "gui-blueprint-library.shelf-choice-all" },
-	default_value = false
 })
 
 ---------------------------------------------------------------------------
