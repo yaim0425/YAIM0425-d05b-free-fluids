@@ -124,6 +124,9 @@ function This_MOD.setting_mod()
     --- Valores de la referencia en este MOD
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
+    --- Contenedor de los fluidos a afectar
+    This_MOD.fluids = {}
+
     --- Valores de referencia
     This_MOD.entity_name = "assembling-machine-2"
     This_MOD.new_entity_name = GMOD.name .. "-free-" .. This_MOD.entity_name
@@ -229,13 +232,140 @@ function This_MOD.get_elements()
 
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-    --- Entidad a afectar
+    --- Fluidos a afectar
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    local function get_fluids(fluids)
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Fluidos a afectar
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        local Fluids = {}
+        for _, recipes in pairs(GMOD.recipes) do
+            for _, recipe in pairs(recipes) do
+                for _, elements in pairs({ recipe.ingredients, recipe.results }) do
+                    for _, element in pairs(elements) do
+                        if element.type == "fluid" then
+                            local Temperatures = Fluids[element.name] or {}
+                            Fluids[element.name] = Temperatures
+
+                            if element.maximum_temperature then
+                                Temperatures[element.maximum_temperature] = true
+                            elseif element.temperature then
+                                Temperatures[element.temperature] = true
+                            end
+                        end
+                    end
+                end
+            end
+        end
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Fluidos que se crean sin recetas
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        for _, entity in pairs(GMOD.entities) do
+            repeat
+                --- Validación
+                if not entity.output_fluid_box then break end
+                if entity.output_fluid_box.pipe_connections == 0 then break end
+                if not entity.output_fluid_box.filter then break end
+                if not entity.target_temperature then break end
+
+                --- Renombrar variable
+                local Name = entity.output_fluid_box.filter
+
+                --- Guardar la temperatura
+                local Temperatures = Fluids[Name] or {}
+                Fluids[Name] = Temperatures
+                Temperatures[entity.target_temperature] = true
+            until true
+        end
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Cambiar los valores vacios
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        for key, value in pairs(Fluids) do
+            if not GMOD.get_length(value) then
+                Fluids[key] = false
+            end
+        end
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Se desean todos los liquidos
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        if This_MOD.setting.all then
+            fluids = Fluids
+            return
+        end
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Fluidos en el ambiente
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        --- Fluidos tomados del suelo
+        for _, tile in pairs(data.raw.tile) do
+            if tile.fluid then
+                fluids[tile.fluid] = Fluids[tile.fluid]
+            end
+        end
+
+        --- Fluidos minables
+        for _, resource in pairs(data.raw.resource) do
+            local results = resource.minable
+            results = results and results.results
+            for _, result in pairs(results or {}) do
+                if result.type == "fluid" then
+                    fluids[result.name] = Fluids[result.name]
+                end
+            end
+        end
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    end
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    --- Valores a afectar
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
     valide(
-        GMOD.entities[This_MOD.entity_name],
-        GMOD.items[This_MOD.entity_name]
+        GMOD.items[This_MOD.entity_name],
+        GMOD.entities[This_MOD.entity_name]
     )
+
+    get_fluids(This_MOD.fluids)
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 end
