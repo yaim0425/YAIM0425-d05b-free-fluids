@@ -128,10 +128,6 @@ function This_MOD.setting_mod()
     This_MOD.entity_name = "assembling-machine-2"
     This_MOD.new_entity_name = GMOD.name .. "-free-" .. This_MOD.entity_name
 
-    --- Prototipos de referencia
-    This_MOD.entity = GMOD.entities[This_MOD.entity_name]
-    This_MOD.item = GMOD.items[This_MOD.entity_name]
-
     --- Acciones
     This_MOD.actions = {
         delete = "ingredients",
@@ -170,24 +166,60 @@ end
 
 function This_MOD.get_elements()
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-    --- Validación
+    --- Función para analizar cada entidad
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    --- Renombrar
-    local entity = This_MOD.entity
-    local item = This_MOD.item
+    local function valide(item, entity)
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Validación
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    --- Validar valores de referencia
-    if GMOD.entities[This_MOD.new_entity_name] then return end
-    if not entity then return end
-    if not item then return end
+        --- Validar valores de referencia
+        if GMOD.entities[This_MOD.new_entity_name] then return end
+        if not entity then return end
+        if not item then return end
 
-    --- Validar si ya fue procesado
-    if
-        This_MOD.processed[entity.type] and
-        This_MOD.processed[entity.type][item.name]
-    then
-        return
+        --- Validar si ya fue procesado
+        if
+            This_MOD.processed[entity.type] and
+            This_MOD.processed[entity.type][item.name]
+        then
+            return
+        end
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Valores para el proceso
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        local Space = {}
+        Space.item = item
+        Space.entity = entity
+
+        Space.recipe = GMOD.recipes[Space.item.name]
+        Space.recipe = Space.recipe and Space.recipe[1] or nil
+
+        Space.prefix = This_MOD.new_entity_name
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Guardar la información
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        This_MOD.to_be_processed[entity.type] = This_MOD.to_be_processed[entity.type] or {}
+        This_MOD.to_be_processed[entity.type][entity.name] = Space
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
     end
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -197,30 +229,13 @@ function This_MOD.get_elements()
 
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-    --- Valores para el proceso
+    --- Entidad a afectar
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    local Space = {}
-    Space.item = item
-    Space.entity = entity
-
-    Space.recipe = GMOD.recipes[Space.item.name]
-    Space.recipe = Space.recipe and Space.recipe[1] or nil
-
-    Space.prefix = This_MOD.new_entity_name
-
-    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-
-
-
-
-
-    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-    --- Guardar la información
-    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-
-    This_MOD.to_be_processed[entity.type] = This_MOD.to_be_processed[entity.type] or {}
-    This_MOD.to_be_processed[entity.type][entity.name] = Space
+    valide(
+        GMOD.entities[This_MOD.entity_name],
+        GMOD.items[This_MOD.entity_name]
+    )
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 end
