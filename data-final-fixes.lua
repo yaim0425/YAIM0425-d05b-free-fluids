@@ -129,6 +129,7 @@ function This_MOD.setting_mod()
     --- Valores de referencia
     This_MOD.entity_name = "assembling-machine-2"
     This_MOD.new_entity_name = GMOD.name .. "-free-" .. This_MOD.entity_name
+    This_MOD.new_localised_name = { "", { "entity-name.market" } }
 
     --- Acciones
     This_MOD.actions = {
@@ -404,7 +405,7 @@ function This_MOD.create_item(space)
 
     Item.name = space.prefix
 
-    Item.localised_name = GMOD.copy(space.entity.localised_name)
+    Item.localised_name = This_MOD.new_localised_name
 
     local Order = tonumber(Item.order) + 1
     Item.order = GMOD.pad_left_zeros(#Item.order, Order)
@@ -485,6 +486,8 @@ function This_MOD.create_entity(space)
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
     Entity.name = space.prefix
+
+    Entity.localised_name = This_MOD.new_localised_name
 
     Entity.minable.results = { {
         type = "item",
@@ -574,6 +577,8 @@ function This_MOD.create_recipe(space)
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
         Recipe.name = space.prefix
+
+        Recipe.localised_name = This_MOD.new_localised_name
 
         Recipe.main_product = nil
         Recipe.maximum_productivity = 1000000
