@@ -721,7 +721,8 @@ function This_MOD.create_recipe_to_fluids()
     for fluid, temperatures in pairs(This_MOD.fluids) do
         for temperature, _ in pairs(temperatures or { [false] = true }) do
             for action, propiety in pairs(This_MOD.actions) do
-                validate_fluid(action, propiety, temperature, GMOD.fluids[fluid])
+                local Fluid = GMOD.copy(GMOD.fluids[fluid])
+                validate_fluid(action, propiety, temperature, Fluid)
             end
         end
     end
