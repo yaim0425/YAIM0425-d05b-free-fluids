@@ -503,17 +503,6 @@ function This_MOD.create_entity(space)
     Entity.energy_source = { type = "void" }
 
     Entity.crafting_categories = {}
-    for action, _ in pairs(This_MOD.actions) do
-        table.insert(
-            Entity.crafting_categories,
-            This_MOD.prefix .. action
-        )
-
-        GMOD.extend({
-            type = "recipe-category",
-            name = This_MOD.prefix .. action
-        })
-    end
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
@@ -725,6 +714,26 @@ function This_MOD.create_recipe_to_fluids()
                 validate_fluid(action, propiety, temperature, Fluid)
             end
         end
+    end
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+    --- Crear categoria y agrega a la maquita
+    --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+    local Category = GMOD.entities[This_MOD.new_entity_name].crafting_categories
+    for action, _ in pairs(This_MOD.actions) do
+        GMOD.extend({
+            type = "recipe-category",
+            name = This_MOD.prefix .. action
+        })
+
+        table.insert(Category, This_MOD.prefix .. action)
     end
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
