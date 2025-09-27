@@ -48,7 +48,7 @@ function This_MOD.start()
     end
 
     --- Crear las recetas para los fluidos
-    This_MOD.create_recipe_free()
+    This_MOD.create_recipe___free()
 
     --- Ejecutar otro MOD
     GMOD.mods["d01b"].start()
@@ -567,7 +567,7 @@ end
 
 ---------------------------------------------------------------------------
 
-function This_MOD.create_recipe_free()
+function This_MOD.create_recipe___free()
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
     --- Procesar cada liquido
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
