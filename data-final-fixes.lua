@@ -12,7 +12,7 @@
 
 local This_MOD = GMOD.get_id_and_name()
 if not This_MOD then return end
-table.insert(GMOD.mods, This_MOD)
+GMOD[This_MOD.id] = This_MOD
 
 ---------------------------------------------------------------------------
 
@@ -51,7 +51,7 @@ function This_MOD.start()
     This_MOD.create_recipe___free()
 
     --- Ejecutar otro MOD
-    GMOD.mods["d01b"].start()
+    GMOD.d01b.start()
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 end
