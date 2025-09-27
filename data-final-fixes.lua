@@ -340,11 +340,13 @@ function This_MOD.get_elements()
     --- Valores a afectar
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
+    --- Entidad que se va a duplicar
     valide_entity(
         GMOD.items[This_MOD.old_entity_name],
         GMOD.entities[This_MOD.old_entity_name]
     )
 
+    --- Fluidos a afectar
     This_MOD.fluids = {}
     get_fluids(This_MOD.fluids)
 
