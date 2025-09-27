@@ -91,15 +91,11 @@ function This_MOD.setting_mod()
     This_MOD.setting = GMOD.setting[This_MOD.id] or {}
 
     --- Indicador del mod
-    local function signal(name)
-        return data.raw["virtual-signal"]["signal-" .. name].icons[1].icon
-    end
+    This_MOD.delete = { icon = GMOD.signal.deny, scale = 0.5 }
+    This_MOD.create = { icon = GMOD.signal.check, scale = 0.5 }
 
-    This_MOD.delete = { icon = signal("deny"), scale = 0.5 }
-    This_MOD.create = { icon = signal("check"), scale = 0.5 }
-
-    This_MOD.indicator = { icon = signal("star"), scale = 0.25, shift = { 0, -5 } }
-    This_MOD.indicator_bg = { icon = signal("black"), scale = 0.25, shift = { 0, -5 } }
+    This_MOD.indicator = { icon = GMOD.signal.star, scale = 0.25, shift = { 0, -5 } }
+    This_MOD.indicator_bg = { icon = GMOD.signal.black, scale = 0.25, shift = { 0, -5 } }
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
