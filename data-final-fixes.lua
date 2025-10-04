@@ -51,7 +51,7 @@ function This_MOD.start()
     This_MOD.create_recipe___free()
 
     --- Ejecutar otro MOD
-    GMOD.d01b.start()
+    if GMOD.d01b then GMOD.d01b.start() end
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 end
