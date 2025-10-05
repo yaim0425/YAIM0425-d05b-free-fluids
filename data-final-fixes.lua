@@ -20,7 +20,7 @@ function This_MOD.start()
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
     --- Valores de la referencia
-    This_MOD.setting_mod()
+    This_MOD.reference_values()
 
     --- Obtener los elementos
     This_MOD.get_elements()
@@ -48,7 +48,7 @@ function This_MOD.start()
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 end
 
-function This_MOD.setting_mod()
+function This_MOD.reference_values()
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
     --- Validar si se cargó antes
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
