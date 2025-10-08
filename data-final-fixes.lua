@@ -369,7 +369,7 @@ function This_MOD.create_item(space)
     Item.localised_name = This_MOD.new_localised_name
 
     --- Actualizar el order
-    local Order = tonumber(Item.order) + 1
+    local Order = tonumber(Item.order) + 2
     Item.order = GMOD.pad_left_zeros(#Item.order, Order)
 
     --- Agregar indicador del MOD
@@ -515,10 +515,6 @@ function This_MOD.create_recipe(space)
     Recipe.icons = GMOD.copy(space.item.icons)
     table.insert(Recipe.icons, This_MOD.indicator_bg)
     table.insert(Recipe.icons, This_MOD.indicator)
-
-    --- Actualizar el order
-    local Order = tonumber(Recipe.order) + 1
-    Recipe.order = GMOD.pad_left_zeros(#Recipe.order, Order)
 
     --- Ingredientes
     Recipe.ingredients = {}
