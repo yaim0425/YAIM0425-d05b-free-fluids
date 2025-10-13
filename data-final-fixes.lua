@@ -554,21 +554,21 @@ function This_MOD.create_recipe___free()
     --- Procesar cada liquido
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    local function validate_fluid(action, propiety, temperature, fluid)
+    local function validate_fluid(space)
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
         --- Valores a usar
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
         --- Bandera de usar la temperatura
-        local Flag = propiety == This_MOD.actions.create and temperature
+        local Flag = space.propiety == This_MOD.actions.create and space.temperature
 
         --- Nombre de la receta
         local Name =
             This_MOD.prefix ..
-            action .. "-" ..
+            space.action .. "-" ..
             This_MOD.setting.amount .. "u-" ..
-            fluid.name ..
-            (Flag and "-t" .. math.floor(temperature) or "")
+            space.fluid.name ..
+            (Flag and "-t" .. math.floor(space.temperature) or "")
 
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
@@ -592,8 +592,15 @@ function This_MOD.create_recipe___free()
         --- Crear el subgroup
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-        local Subgroup = This_MOD.prefix .. fluid.subgroup .. "-" .. action
-        GMOD.duplicate_subgroup(fluid.subgroup, Subgroup)
+        --- Valores
+        local New_subgroup =
+            This_MOD.prefix ..
+            space.fluid.subgroup .. "-" ..
+            space.action
+        local Old_subgroup = space.fluid.subgroup
+
+        --- Acción
+        GMOD.duplicate_subgroup(Old_subgroup, New_subgroup)
 
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
@@ -621,18 +628,18 @@ function This_MOD.create_recipe___free()
         Recipe.name = Name
 
         --- Apodo y descripción
-        Recipe.localised_name = GMOD.copy(fluid.localised_name)
-        Recipe.localised_description = GMOD.copy(fluid.localised_description)
+        Recipe.localised_name = GMOD.copy(space.fluid.localised_name)
+        Recipe.localised_description = { "" }
 
         --- Subgrupo y Order
-        Recipe.subgroup = Subgroup
-        Recipe.order = fluid.order
+        Recipe.subgroup = New_subgroup
+        Recipe.order = space.fluid.order
 
         --- Agregar indicador del MOD
-        Recipe.icons = GMOD.copy(fluid.icons)
+        Recipe.icons = GMOD.copy(space.fluid.icons)
 
         --- Categoria de fabricación
-        Recipe.category = This_MOD.prefix .. action
+        Recipe.category = This_MOD.prefix .. space.action
 
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
@@ -644,12 +651,15 @@ function This_MOD.create_recipe___free()
         --- Variaciones entre las recetas
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-        table.insert(Recipe.icons, This_MOD[action])
-        Recipe[propiety] = { {
+        --- Indicador del MOD
+        table.insert(Recipe.icons, This_MOD[space.action])
+
+        --- Ingrediente o resultado
+        Recipe[space.propiety] = { {
             type = "fluid",
-            name = fluid.name,
+            name = space.fluid.name,
             amount = This_MOD.setting.amount,
-            temperature = Flag and temperature or nil,
+            temperature = Flag and space.temperature or nil,
             ignored_by_stats = This_MOD.setting.amount
         } }
 
@@ -681,8 +691,12 @@ function This_MOD.create_recipe___free()
     for fluid, temperatures in pairs(This_MOD.fluids) do
         for temperature, _ in pairs(temperatures or { [false] = true }) do
             for action, propiety in pairs(This_MOD.actions) do
-                local Fluid = GMOD.copy(GMOD.fluids[fluid])
-                validate_fluid(action, propiety, temperature, Fluid)
+                validate_fluid({
+                    fluid = GMOD.fluids[fluid],
+                    action = action,
+                    propiety = propiety,
+                    temperature = temperature or nil,
+                })
             end
         end
     end
