@@ -191,119 +191,126 @@ function This_MOD.get_elements()
     --- Fluidos a afectar
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    local function get_fluids(fluids)
+    local function get_fluids()
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-        --- Fluidos a afectar
+        --- Variable a usar
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-        local Fluids = {}
-        for _, recipes in pairs(GMOD.recipes) do
-            for _, recipe in pairs(recipes) do
-                for _, elements in pairs({ recipe.ingredients, recipe.results }) do
+        local Output = {}
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Validar el fluido
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        local function validate(element)
+            if element.type ~= "fluid" then return end
+
+            local Temperatures = Output[element.name] or {}
+            Output[element.name] = Temperatures
+
+            if element.maximum_temperature then
+                Temperatures[element.maximum_temperature] = true
+            elseif element.temperature then
+                Temperatures[element.temperature] = true
+            end
+        end
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Obtener los fluidos
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        --- Todos los fluidos
+        if This_MOD.setting.all then
+            --- Fluidos creados con recetas
+            for _, recipe in pairs(data.raw.recipe) do
+                for _, elements in pairs({
+                    recipe.ingredients,
+                    recipe.results
+                }) do
                     for _, element in pairs(elements) do
-                        if element.type == "fluid" then
-                            local Temperatures = Fluids[element.name] or {}
-                            Fluids[element.name] = Temperatures
-
-                            if element.maximum_temperature then
-                                Temperatures[element.maximum_temperature] = true
-                            elseif element.temperature then
-                                Temperatures[element.temperature] = true
-                            end
-                        end
+                        validate(element)
                     end
                 end
             end
-        end
 
-        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+            --- Fluidos creados sin recetas
+            for _, entity in pairs(GMOD.entities) do
+                repeat
+                    --- Validación
+                    if not entity.output_fluid_box then break end
+                    if entity.output_fluid_box.pipe_connections == 0 then break end
+                    if not entity.output_fluid_box.filter then break end
+                    if not entity.target_temperature then break end
 
+                    --- Renombrar variable
+                    local Name = entity.output_fluid_box.filter
 
-
-
-
-        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-        --- Fluidos que se crean sin recetas
-        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-
-        for _, entity in pairs(GMOD.entities) do
-            repeat
-                --- Validación
-                if not entity.output_fluid_box then break end
-                if entity.output_fluid_box.pipe_connections == 0 then break end
-                if not entity.output_fluid_box.filter then break end
-                if not entity.target_temperature then break end
-
-                --- Renombrar variable
-                local Name = entity.output_fluid_box.filter
-
-                --- Guardar la temperatura
-                local Temperatures = Fluids[Name] or {}
-                Fluids[Name] = Temperatures
-                Temperatures[entity.target_temperature] = true
-            until true
-        end
-
-        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-
-
-
-
-
-        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-        --- Cambiar los valores vacios
-        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-
-        for key, value in pairs(Fluids) do
-            if not GMOD.get_length(value) then
-                Fluids[key] = false
+                    --- Guardar la temperatura
+                    local Temperatures = Output[Name] or {}
+                    Output[Name] = Temperatures
+                    Temperatures[entity.target_temperature] = true
+                until true
             end
         end
 
-        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-
-
-
-
-
-        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-        --- Se desean todos los liquidos
-        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-
-        if This_MOD.setting.all then
-            for key, value in pairs(Fluids) do
-                fluids[key] = value
+        --- Solo los fluidos en la naturaleza
+        if not This_MOD.setting.all then
+            --- Fluidos tomados del suelo
+            for _, tile in pairs(data.raw.tile) do
+                if tile.fluid then
+                    Output[tile.fluid] = {}
+                end
             end
-            return
-        end
 
-        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-
-
-
-
-
-        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-        --- Fluidos en el ambiente
-        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-
-        --- Fluidos tomados del suelo
-        for _, tile in pairs(data.raw.tile) do
-            if tile.fluid then
-                fluids[tile.fluid] = Fluids[tile.fluid]
-            end
-        end
-
-        --- Fluidos minables
-        for _, resource in pairs(data.raw.resource) do
-            local results = resource.minable
-            results = results and results.results
-            for _, result in pairs(results or {}) do
-                if result.type == "fluid" then
-                    fluids[result.name] = Fluids[result.name]
+            --- Fluidos minables
+            for _, resource in pairs(data.raw.resource) do
+                local results = resource.minable
+                results = results and results.results or {}
+                for _, result in pairs(results) do
+                    validate(result)
                 end
             end
         end
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Dar el formato deseado
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        for fluid_name, temperatures in pairs(Output) do
+            if not GMOD.get_length(temperatures) then
+                Output[fluid_name] = false
+            end
+        end
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Devolver el resultado
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        return Output
 
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
     end
@@ -325,8 +332,7 @@ function This_MOD.get_elements()
     )
 
     --- Fluidos a afectar
-    This_MOD.fluids = {}
-    get_fluids(This_MOD.fluids)
+    This_MOD.fluids = get_fluids()
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 end
