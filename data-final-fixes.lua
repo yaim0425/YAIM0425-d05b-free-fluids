@@ -375,7 +375,7 @@ function This_MOD.create_item(space)
     Item.localised_name = This_MOD.new_localised_name
 
     --- Actualizar el order
-    local Order = tonumber(Item.order) + 2
+    local Order = tonumber(Item.order) + 1
     Item.order = GMOD.pad_left_zeros(#Item.order, Order)
 
     --- Agregar indicador del MOD
