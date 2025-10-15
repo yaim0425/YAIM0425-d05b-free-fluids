@@ -45,6 +45,9 @@ function This_MOD.start()
     --- Ejecutar otro MOD
     if GMOD.d01b then GMOD.d01b.start() end
 
+    --- Fijar las posiciones actual
+    GMOD.d00b.change_orders()
+
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 end
 
