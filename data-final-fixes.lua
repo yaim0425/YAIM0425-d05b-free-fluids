@@ -688,14 +688,16 @@ function This_MOD.create_recipe___free()
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
     for fluid, temperatures in pairs(This_MOD.fluids) do
-        for temperature, _ in pairs(temperatures or { [false] = true }) do
-            for action, propiety in pairs(This_MOD.actions) do
-                validate_fluid({
-                    fluid = GMOD.fluids[fluid],
-                    action = action,
-                    propiety = propiety,
-                    temperature = temperature or nil,
-                })
+        if GMOD.fluids[fluid] then
+            for temperature, _ in pairs(temperatures or { [false] = true }) do
+                for action, propiety in pairs(This_MOD.actions) do
+                    validate_fluid({
+                        fluid = GMOD.fluids[fluid],
+                        action = action,
+                        propiety = propiety,
+                        temperature = temperature or nil,
+                    })
+                end
             end
         end
     end
