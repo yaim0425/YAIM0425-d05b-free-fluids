@@ -693,10 +693,10 @@ function This_MOD.create_recipe___free()
     --- Recorrer cada fluidos
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    for fluid, temperatures in pairs(This_MOD.fluids) do
-        if GMOD.fluids[fluid] then
-            for temperature, _ in pairs(temperatures or { [false] = true }) do
-                for action, propiety in pairs(This_MOD.actions) do
+    for action, propiety in pairs(This_MOD.actions) do
+        for fluid, temperatures in pairs(This_MOD.fluids) do
+            if GMOD.fluids[fluid] then
+                for temperature, _ in pairs(temperatures or { [false] = true }) do
                     validate_fluid({
                         fluid = GMOD.fluids[fluid],
                         action = action,
@@ -706,6 +706,7 @@ function This_MOD.create_recipe___free()
                 end
             end
         end
+        GMOD.d00b.change_orders()
     end
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
