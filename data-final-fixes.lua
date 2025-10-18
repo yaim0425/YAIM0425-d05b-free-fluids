@@ -588,26 +588,6 @@ function This_MOD.create_recipe___free()
 
 
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-        --- Crear el subgroup
-        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-
-        --- Valores
-        local New_subgroup =
-            This_MOD.prefix ..
-            space.fluid.subgroup .. "-" ..
-            space.action
-        local Old_subgroup = space.fluid.subgroup
-
-        --- Acción
-        GMOD.duplicate_subgroup(Old_subgroup, New_subgroup)
-
-        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-
-
-
-
-
-        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
         --- Duplicar el elemento
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
@@ -631,7 +611,11 @@ function This_MOD.create_recipe___free()
         Recipe.localised_description = { "" }
 
         --- Subgrupo y Order
-        Recipe.subgroup = New_subgroup
+        Recipe.subgroup =
+            This_MOD.prefix ..
+            space.fluid.subgroup .. "-" ..
+            space.action
+
         Recipe.order = space.fluid.order
 
         --- Agregar indicador del MOD
@@ -639,6 +623,29 @@ function This_MOD.create_recipe___free()
 
         --- Categoria de fabricación
         Recipe.category = This_MOD.prefix .. space.action
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Crear el subgrupo para el objeto
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        --- Duplicar el subgrupo
+        if not GMOD.subgroups[Recipe.subgroup] then
+            GMOD.duplicate_subgroup(space.fluid.subgroup, Recipe.subgroup)
+
+            --- Renombrar
+            local Subgroup = GMOD.subgroups[Recipe.subgroup]
+            local Order = GMOD.subgroups[space.fluid.subgroup].order
+
+            --- Actualizar el order
+            Subgroup.order = 0 .. Order:sub(2)
+        end
+
 
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
