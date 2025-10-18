@@ -641,9 +641,10 @@ function This_MOD.create_recipe___free()
             --- Renombrar
             local Subgroup = GMOD.subgroups[Recipe.subgroup]
             local Order = GMOD.subgroups[space.fluid.subgroup].order
+            local Index = space.propiety == This_MOD.actions.create and 1 or 2
 
             --- Actualizar el order
-            Subgroup.order = 0 .. Order:sub(2)
+            Subgroup.order = Index .. Order:sub(2)
         end
 
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -706,7 +707,6 @@ function This_MOD.create_recipe___free()
                 end
             end
         end
-        GMOD.d00b.change_orders()
     end
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
