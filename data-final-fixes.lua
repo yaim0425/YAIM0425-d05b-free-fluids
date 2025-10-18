@@ -45,6 +45,9 @@ function This_MOD.start()
     --- Ejecutar otro MOD
     if GMOD.d01b then GMOD.d01b.start() end
 
+    --- Fijar las posiciones actual
+    GMOD.d00b.change_orders()
+
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 end
 
@@ -191,119 +194,126 @@ function This_MOD.get_elements()
     --- Fluidos a afectar
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    local function get_fluids(fluids)
+    local function get_fluids()
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-        --- Fluidos a afectar
+        --- Variable a usar
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-        local Fluids = {}
-        for _, recipes in pairs(GMOD.recipes) do
-            for _, recipe in pairs(recipes) do
-                for _, elements in pairs({ recipe.ingredients, recipe.results }) do
+        local Output = {}
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Validar el fluido
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        local function validate(element)
+            if element.type ~= "fluid" then return end
+
+            local Temperatures = Output[element.name] or {}
+            Output[element.name] = Temperatures
+
+            if element.maximum_temperature then
+                Temperatures[element.maximum_temperature] = true
+            elseif element.temperature then
+                Temperatures[element.temperature] = true
+            end
+        end
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Obtener los fluidos
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        --- Todos los fluidos
+        if This_MOD.setting.all then
+            --- Fluidos creados con recetas
+            for _, recipe in pairs(data.raw.recipe) do
+                for _, elements in pairs({
+                    recipe.ingredients,
+                    recipe.results
+                }) do
                     for _, element in pairs(elements) do
-                        if element.type == "fluid" then
-                            local Temperatures = Fluids[element.name] or {}
-                            Fluids[element.name] = Temperatures
-
-                            if element.maximum_temperature then
-                                Temperatures[element.maximum_temperature] = true
-                            elseif element.temperature then
-                                Temperatures[element.temperature] = true
-                            end
-                        end
+                        validate(element)
                     end
                 end
             end
-        end
 
-        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+            --- Fluidos creados sin recetas
+            for _, entity in pairs(GMOD.entities) do
+                repeat
+                    --- Validación
+                    if not entity.output_fluid_box then break end
+                    if entity.output_fluid_box.pipe_connections == 0 then break end
+                    if not entity.output_fluid_box.filter then break end
+                    if not entity.target_temperature then break end
 
+                    --- Renombrar variable
+                    local Name = entity.output_fluid_box.filter
 
-
-
-
-        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-        --- Fluidos que se crean sin recetas
-        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-
-        for _, entity in pairs(GMOD.entities) do
-            repeat
-                --- Validación
-                if not entity.output_fluid_box then break end
-                if entity.output_fluid_box.pipe_connections == 0 then break end
-                if not entity.output_fluid_box.filter then break end
-                if not entity.target_temperature then break end
-
-                --- Renombrar variable
-                local Name = entity.output_fluid_box.filter
-
-                --- Guardar la temperatura
-                local Temperatures = Fluids[Name] or {}
-                Fluids[Name] = Temperatures
-                Temperatures[entity.target_temperature] = true
-            until true
-        end
-
-        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-
-
-
-
-
-        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-        --- Cambiar los valores vacios
-        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-
-        for key, value in pairs(Fluids) do
-            if not GMOD.get_length(value) then
-                Fluids[key] = false
+                    --- Guardar la temperatura
+                    local Temperatures = Output[Name] or {}
+                    Output[Name] = Temperatures
+                    Temperatures[entity.target_temperature] = true
+                until true
             end
         end
 
-        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-
-
-
-
-
-        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-        --- Se desean todos los liquidos
-        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-
-        if This_MOD.setting.all then
-            for key, value in pairs(Fluids) do
-                fluids[key] = value
+        --- Solo los fluidos en la naturaleza
+        if not This_MOD.setting.all then
+            --- Fluidos tomados del suelo
+            for _, tile in pairs(data.raw.tile) do
+                if tile.fluid then
+                    Output[tile.fluid] = {}
+                end
             end
-            return
-        end
 
-        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-
-
-
-
-
-        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-        --- Fluidos en el ambiente
-        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-
-        --- Fluidos tomados del suelo
-        for _, tile in pairs(data.raw.tile) do
-            if tile.fluid then
-                fluids[tile.fluid] = Fluids[tile.fluid]
-            end
-        end
-
-        --- Fluidos minables
-        for _, resource in pairs(data.raw.resource) do
-            local results = resource.minable
-            results = results and results.results
-            for _, result in pairs(results or {}) do
-                if result.type == "fluid" then
-                    fluids[result.name] = Fluids[result.name]
+            --- Fluidos minables
+            for _, resource in pairs(data.raw.resource) do
+                local results = resource.minable
+                results = results and results.results or {}
+                for _, result in pairs(results) do
+                    validate(result)
                 end
             end
         end
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Dar el formato deseado
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        for fluid_name, temperatures in pairs(Output) do
+            if not GMOD.get_length(temperatures) then
+                Output[fluid_name] = false
+            end
+        end
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Devolver el resultado
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        return Output
 
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
     end
@@ -325,8 +335,7 @@ function This_MOD.get_elements()
     )
 
     --- Fluidos a afectar
-    This_MOD.fluids = {}
-    get_fluids(This_MOD.fluids)
+    This_MOD.fluids = get_fluids()
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 end
@@ -504,10 +513,6 @@ function This_MOD.create_recipe(space)
     --- Elimnar propiedades inecesarias
     Recipe.main_product = nil
 
-    --- Productividad
-    Recipe.allow_productivity = true
-    Recipe.maximum_productivity = 1000000
-
     --- Receta desbloqueada por tecnología
     Recipe.enabled = true
 
@@ -515,10 +520,6 @@ function This_MOD.create_recipe(space)
     Recipe.icons = GMOD.copy(space.item.icons)
     table.insert(Recipe.icons, This_MOD.indicator_bg)
     table.insert(Recipe.icons, This_MOD.indicator)
-
-    --- Actualizar el order
-    local Order = tonumber(Recipe.order) + 1
-    Recipe.order = GMOD.pad_left_zeros(#Recipe.order, Order)
 
     --- Ingredientes
     Recipe.ingredients = {}
@@ -552,21 +553,21 @@ function This_MOD.create_recipe___free()
     --- Procesar cada liquido
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    local function validate_fluid(action, propiety, temperature, fluid)
+    local function validate_fluid(space)
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
         --- Valores a usar
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
         --- Bandera de usar la temperatura
-        local Flag = propiety == This_MOD.actions.create and temperature
+        local Flag = space.propiety == This_MOD.actions.create and space.temperature
 
         --- Nombre de la receta
         local Name =
             This_MOD.prefix ..
-            action .. "-" ..
+            space.action .. "-" ..
             This_MOD.setting.amount .. "u-" ..
-            fluid.name ..
-            (Flag and "-t" .. math.floor(temperature) or "")
+            space.fluid.name ..
+            (Flag and "-t" .. math.floor(space.temperature) or "")
 
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
@@ -579,19 +580,6 @@ function This_MOD.create_recipe___free()
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
         if data.raw.recipe[Name] then return end
-
-        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-
-
-
-
-
-        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-        --- Crear el subgroup
-        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-
-        local Subgroup = This_MOD.prefix .. fluid.subgroup .. "-" .. action
-        GMOD.duplicate_subgroup(fluid.subgroup, Subgroup)
 
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
@@ -619,18 +607,44 @@ function This_MOD.create_recipe___free()
         Recipe.name = Name
 
         --- Apodo y descripción
-        Recipe.localised_name = GMOD.copy(fluid.localised_name)
-        Recipe.localised_description = GMOD.copy(fluid.localised_description)
+        Recipe.localised_name = GMOD.copy(space.fluid.localised_name)
+        Recipe.localised_description = { "" }
 
         --- Subgrupo y Order
-        Recipe.subgroup = Subgroup
-        Recipe.order = fluid.order
+        Recipe.subgroup =
+            This_MOD.prefix ..
+            space.fluid.subgroup .. "-" ..
+            space.action
+
+        Recipe.order = space.fluid.order
 
         --- Agregar indicador del MOD
-        Recipe.icons = GMOD.copy(fluid.icons)
+        Recipe.icons = GMOD.copy(space.fluid.icons)
 
         --- Categoria de fabricación
-        Recipe.category = This_MOD.prefix .. action
+        Recipe.category = This_MOD.prefix .. space.action
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+
+
+
+
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+        --- Crear el subgrupo para el objeto
+        --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+
+        --- Duplicar el subgrupo
+        if not GMOD.subgroups[Recipe.subgroup] then
+            GMOD.duplicate_subgroup(space.fluid.subgroup, Recipe.subgroup)
+
+            --- Renombrar
+            local Subgroup = GMOD.subgroups[Recipe.subgroup]
+            local Order = GMOD.subgroups[space.fluid.subgroup].order
+
+            --- Actualizar el order
+            Subgroup.order = 0 .. Order:sub(2)
+        end
 
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
@@ -642,12 +656,15 @@ function This_MOD.create_recipe___free()
         --- Variaciones entre las recetas
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-        table.insert(Recipe.icons, This_MOD[action])
-        Recipe[propiety] = { {
+        --- Indicador del MOD
+        table.insert(Recipe.icons, This_MOD[space.action])
+
+        --- Ingrediente o resultado
+        Recipe[space.propiety] = { {
             type = "fluid",
-            name = fluid.name,
+            name = space.fluid.name,
             amount = This_MOD.setting.amount,
-            temperature = Flag and temperature or nil,
+            temperature = Flag and space.temperature or nil,
             ignored_by_stats = This_MOD.setting.amount
         } }
 
@@ -676,13 +693,20 @@ function This_MOD.create_recipe___free()
     --- Recorrer cada fluidos
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    for fluid, temperatures in pairs(This_MOD.fluids) do
-        for temperature, _ in pairs(temperatures or { [false] = true }) do
-            for action, propiety in pairs(This_MOD.actions) do
-                local Fluid = GMOD.copy(GMOD.fluids[fluid])
-                validate_fluid(action, propiety, temperature, Fluid)
+    for action, propiety in pairs(This_MOD.actions) do
+        for fluid, temperatures in pairs(This_MOD.fluids) do
+            if GMOD.fluids[fluid] then
+                for temperature, _ in pairs(temperatures or { [false] = true }) do
+                    validate_fluid({
+                        fluid = GMOD.fluids[fluid],
+                        action = action,
+                        propiety = propiety,
+                        temperature = temperature or nil,
+                    })
+                end
             end
         end
+        GMOD.d00b.change_orders()
     end
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
