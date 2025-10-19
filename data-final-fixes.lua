@@ -43,10 +43,13 @@ function This_MOD.start()
     This_MOD.create_recipe___free()
 
     --- Ejecutar otro MOD
-    if GMOD.d01b then GMOD.d01b.start() end
-
-    --- Fijar las posiciones actual
-    GMOD.d00b.change_orders()
+    if GMOD.d01b then
+        --- Cambiar el tamaño de la entidad
+        GMOD.d01b.start()
+    else
+        --- Fijar las posiciones actual
+        GMOD.d00b.change_orders()
+    end
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 end
