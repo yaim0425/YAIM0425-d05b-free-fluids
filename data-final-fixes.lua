@@ -140,7 +140,7 @@ function This_MOD.get_elements()
     --- Función para analizar cada entidad
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    local function valide_entity(item, entity)
+    local function validate_entity(item, entity)
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
         --- Validación
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -332,7 +332,7 @@ function This_MOD.get_elements()
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
     --- Entidad que se va a duplicar
-    valide_entity(
+    validate_entity(
         GMOD.items[This_MOD.old_entity_name],
         GMOD.entities[This_MOD.old_entity_name]
     )
