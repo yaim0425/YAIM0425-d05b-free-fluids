@@ -43,10 +43,13 @@ function This_MOD.start()
     This_MOD.create_recipe___free()
 
     --- Ejecutar otro MOD
-    if GMOD.d01b then GMOD.d01b.start() end
-
-    --- Fijar las posiciones actual
-    GMOD.d00b.change_orders()
+    if GMOD.d01b then
+        --- Cambiar el tamaño de la entidad
+        GMOD.d01b.start()
+    else
+        --- Fijar las posiciones actual
+        GMOD.d00b.change_orders()
+    end
 
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 end
@@ -137,7 +140,7 @@ function This_MOD.get_elements()
     --- Función para analizar cada entidad
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
-    local function valide_entity(item, entity)
+    local function validate_entity(item, entity)
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
         --- Validación
         --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -329,7 +332,7 @@ function This_MOD.get_elements()
     --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 
     --- Entidad que se va a duplicar
-    valide_entity(
+    validate_entity(
         GMOD.items[This_MOD.old_entity_name],
         GMOD.entities[This_MOD.old_entity_name]
     )
