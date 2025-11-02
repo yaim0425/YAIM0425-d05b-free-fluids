@@ -19,7 +19,7 @@ require("__" .. "YAIM0425-d00b-core" .. "__.settings-final-fixes")
 
 
 ---------------------------------------------------------------------------
----[ Contenedor de este archivo ]---
+---[ Información del MOD ]---
 ---------------------------------------------------------------------------
 
 local This_MOD = GMOD.get_id_and_name()
